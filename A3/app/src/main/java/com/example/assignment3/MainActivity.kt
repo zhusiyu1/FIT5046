@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                         //composable("login") { Login(navController) }
                         //composable("home") { Home(navController, "asd") }
                     }
+                    // Test comment
                 }
             }
         }
