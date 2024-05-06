@@ -71,3 +71,4 @@ fun Home(navController: NavController, name: String) {
 
     }
 }
+//test
