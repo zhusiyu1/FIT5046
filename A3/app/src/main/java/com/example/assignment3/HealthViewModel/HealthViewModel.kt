@@ -19,6 +19,7 @@ class HealthViewModel: ViewModel() {
 
     // Get user information from the store
     private lateinit var profileInformation: Array<Any>
+
     fun getUserInformation(): Array<Any> {
         profileInformation = arrayOf(profileUiState.value.email, profileUiState.value.fullName, profileUiState.value.username, profileUiState.value.phone, profileUiState.value.address)
         return profileInformation

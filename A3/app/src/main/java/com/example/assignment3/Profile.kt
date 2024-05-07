@@ -91,7 +91,7 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?, health
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
                 .offset(
-                    x = 36.dp,
+                    x = 34.dp,
                     y = 239.dp
                 ), profileUiState.fullName)
         // DOB field
@@ -136,7 +136,7 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?, health
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
                 .offset(
-                    x = 36.dp,
+                    x = 34.dp,
                     y = 126.dp
                 ))
         Text(
@@ -148,7 +148,7 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?, health
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
                 .offset(
-                    x = 37.dp,
+                    x = 34.dp,
                     y = 216.dp
                 )
                 .requiredWidth(width = 84.dp)
@@ -162,7 +162,7 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?, health
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
                 .offset(
-                    x = 39.dp,
+                    x = 34.dp,
                     y = 305.dp
                 ))
         Text(
@@ -195,68 +195,26 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?, health
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
                 .offset(
-                    x = 36.dp,
+                    x = 34.dp,
                     y = 519.dp
                 )
                 .requiredWidth(width = 325.dp)
                 .clip(shape = RoundedCornerShape(10.dp))
                 .background(color = Color(0xfff7f8f9)))
-        Text(
-            text = "16/01/2024   General Appointment",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 55.dp,
-                    y = 544.dp
-                )
-                .requiredWidth(width = 273.dp)
-        )
-        Text(
-            text = "30/02/2024 General Appointment",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 55.dp,
-                    y = 594.dp
-                )
-                .requiredWidth(width = 272.dp)
-        )
-        Text(
-            text = "13/04/2024  General Appointment",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 55.dp,
-                    y = 643.dp
-                )
-                .requiredWidth(width = 273.dp)
-        )
-        Text(
-            text = "13/04/2024  General Appointment",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 55.dp,
-                    y = 693.dp
-                )
-                .requiredWidth(width = 273.dp)
-        )
+        LazyColumn(modifier = Modifier
+            .align(alignment = Alignment.TopStart)
+            .offset(
+                x = 34.dp,
+                y = 540.dp
+            )
+            .requiredWidth(width = 272.dp)) {
+            items(3) { index ->
+                Text(text = "Doctor Appointment ${index}",color = Color.Black,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium), modifier = Modifier.padding(bottom = 16.dp))
+            }
+        }
     }
 }
 
