@@ -75,11 +75,10 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 
 
-@Composable
-fun GreetingPreview() {
-    Assignment3Theme {
-        Greeting("Android")
-    }
+enum class Routes(val value: String) {
+    Home("Home"),
+    Map("Map"),
+    Profile("Profile")
 }
 
 

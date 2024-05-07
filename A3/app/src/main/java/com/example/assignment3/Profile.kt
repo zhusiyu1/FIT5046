@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -33,6 +34,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,13 +48,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.assignment3.HealthViewModel.HealthViewModel
+import com.example.assignment3.State.ProfileUiState
 
 @Composable
-fun Profile(modifier: Modifier = Modifier, navController: NavController?) {
+fun Profile(modifier: Modifier = Modifier, navController: NavController?, healthViewModel: HealthViewModel = viewModel()) {
+    val profileUiState by healthViewModel.profileUiState.collectAsState()
+
     Box(
         modifier = modifier
             .requiredWidth(width = 393.dp)
+            .fillMaxHeight()
             .clip(shape = RoundedCornerShape(50.dp))
             .background(color = Color.White)
     ) {
@@ -68,31 +77,25 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?) {
                     x = 0.dp,
                     y = 70.dp
                 ))
+        // Email field
         Property1Active(
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
                 .offset(
                     x = 34.dp,
                     y = 150.dp
-                ))
-        Property1Default1(
+                ),
+            profileUiState.email)
+        // Fullname field
+        Property1Active(
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
                 .offset(
                     x = 36.dp,
                     y = 239.dp
-                ))
-        Tab(
-            selected = false,
-            onClick = {  },
-            text = {
-                Text(
-                    text = "13/03/03",
-                    color = Color(0xff1e232c).copy(alpha = 0.56f),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium))
-            },
+                ), profileUiState.fullName)
+        // DOB field
+        Property1Active(
             modifier = Modifier
                 .align(alignment = Alignment.TopCenter)
                 .offset(
@@ -100,25 +103,10 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?) {
                     y = 329.dp
                 )
                 .requiredWidth(width = 325.dp)
-                .requiredHeight(height = 50.dp)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .background(color = Color(0xfff7f8f9))
-                .border(
-                    border = BorderStroke(1.dp, Color(0xffe8ecf4)),
-                    shape = RoundedCornerShape(10.dp)
-                )
-                .padding(all = 20.dp))
-        Tab(
-            selected = false,
-            onClick = {  },
-            text = {
-                Text(
-                    text = "102 Rainforest Walk, Clayton, Australia, Victoria",
-                    color = Color(0xff1e232c).copy(alpha = 0.56f),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium))
-            },
+                .background(color = Color(0xfff7f8f9)),
+            profileUiState.dob)
+        // Address field
+        Property1Active(
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
                 .offset(
@@ -126,14 +114,8 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?) {
                     y = 419.dp
                 )
                 .requiredWidth(width = 325.dp)
-                .requiredHeight(height = 62.dp)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .background(color = Color(0xfff7f8f9))
-                .border(
-                    border = BorderStroke(1.dp, Color(0xffe8ecf4)),
-                    shape = RoundedCornerShape(10.dp)
-                )
-                .padding(all = 20.dp))
+                .background(color = Color(0xfff7f8f9)),
+            profileUiState.address)
         Box(
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
@@ -143,7 +125,7 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?) {
                 )
                 .requiredSize(size = 41.dp)
         ) {
-            BackButton(onClick = { GoBack(navController!!)}, Modifier)
+            BackButton(onClick = { goBack(navController!!)}, Modifier)
         }
         Text(
             text = "Email",
@@ -158,7 +140,7 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?) {
                     y = 126.dp
                 ))
         Text(
-            text = "Full Name",
+            text = "Full name",
             color = Color.Black,
             style = TextStyle(
                 fontSize = 16.sp,
@@ -279,59 +261,42 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?) {
 }
 
 @Composable
-fun Property1Active(modifier: Modifier = Modifier) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .requiredWidth(width = 325.dp)
-            .clip(shape = RoundedCornerShape(10.dp))
-            .background(color = Color(0xfff7f8f9))
-            .border(
-                border = BorderStroke(1.dp, Color(0xff1f41bb)),
-                shape = RoundedCornerShape(10.dp)
-            )
-            .padding(all = 20.dp)
-    ) {
-        Text(
-            text = "example@gmail.com",
-            color = Color(0xff1e232c).copy(alpha = 0.56f),
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .fillMaxWidth())
-    }
+fun Property1Active(modifier: Modifier = Modifier, inputTextValue: String) {
+    OutlinedTextField(value = inputTextValue, onValueChange = {},modifier = modifier
+        .requiredWidth(width = 325.dp)
+        .background(color = Color(0xfff7f8f9)),
+        enabled = false
+    )
 }
 
-@Composable
-fun Property1Default1(modifier: Modifier = Modifier) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .requiredWidth(width = 325.dp)
-            .requiredHeight(height = 50.dp)
-            .clip(shape = RoundedCornerShape(10.dp))
-            .background(color = Color(0xfff7f8f9))
-            .border(
-                border = BorderStroke(1.dp, Color(0xffe8ecf4)),
-                shape = RoundedCornerShape(10.dp)
-            )
-            .padding(all = 20.dp)
-    ) {
-        Text(
-            text = "Ibrahim Ibrahim",
-            color = Color(0xff1e232c).copy(alpha = 0.56f),
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .fillMaxWidth())
-    }
-}
+//@Composable
+//fun Property1Default1(modifier: Modifier = Modifier, profileUiState: ProfileUiState) {
+//    Row(
+//        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = modifier
+//            .requiredWidth(width = 325.dp)
+//            .requiredHeight(height = 50.dp)
+//            .clip(shape = RoundedCornerShape(10.dp))
+//            .background(color = Color(0xfff7f8f9))
+//            .border(
+//                border = BorderStroke(1.dp, Color(0xffe8ecf4)),
+//                shape = RoundedCornerShape(10.dp)
+//            )
+//            .padding(all = 20.dp)
+//    ) {
+//        Text(
+//            text = profileUiState.fullName,
+//            color = Color(0xff1e232c).copy(alpha = 0.56f),
+//            style = TextStyle(
+//                fontSize = 16.sp,
+//                fontWeight = FontWeight.Medium),
+//            modifier = Modifier
+//                .fillMaxWidth())
+//    }
+//}
 
-fun GoBack(navController: NavController) {
+fun goBack(navController: NavController) {
     navController.navigate("Welcome")
 }
 

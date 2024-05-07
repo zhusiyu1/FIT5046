@@ -73,6 +73,5 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
-
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 }
