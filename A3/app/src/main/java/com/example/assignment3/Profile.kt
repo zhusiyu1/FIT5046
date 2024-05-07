@@ -69,7 +69,7 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?, health
         Row(horizontalArrangement = Arrangement.SpaceBetween,verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(bottom = 16.dp)
             .fillMaxWidth()) {
-            BackButton(onClick = { goBack(navController!!)}, Modifier)
+//            BackButton(onClick = { goBack(navController!!)}, Modifier)
             Row ( horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()){
                 Text(
                     text = "Profile",

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -54,9 +55,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 @Composable
-fun Appointment(modifier: Modifier = Modifier) {
+fun Appointment(modifier: Modifier = Modifier, navController: NavController?) {
     Box(
         modifier = modifier
+            .fillMaxHeight()
             .clip(shape = RoundedCornerShape(50.dp))
             .background(color = Color.White)
     ) {
@@ -286,5 +288,5 @@ fun GoBackButton(
 @Preview
 @Composable
 private fun AppointmentPreview() {
-    Appointment(Modifier)
+    Appointment(Modifier, null)
 }

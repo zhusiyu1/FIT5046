@@ -60,15 +60,15 @@ fun BottomNavigationBar(navController: NavController) {
             composable(Routes.Home.value) {
                 Home(navController,"")
             }
-//            composable(Routes.Profile.value) {
-//                Profile(navController)
-//            }
+            composable(Routes.Profile.value) {
+                Profile(Modifier, navController, )
+            }
 //            composable(Routes.About.value) {
 //                Map(navController)
 //            }
-//            composable(Routes.Appointment.value) {
-//                Appointment(navController)
-//            }
+            composable(Routes.Appointment.value) {
+                Appointment(Modifier, navController)
+            }
         }
     }
 }

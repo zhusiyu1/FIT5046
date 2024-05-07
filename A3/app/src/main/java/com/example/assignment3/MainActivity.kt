@@ -56,8 +56,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController, startDestination = "Welcome") {
                         composable("Welcome") { Welcome(navController) }
-                        //composable("login") { Login(navController) }
-                        //composable("home") { Home(navController, "asd") }
+                        composable("login") { Login(navController) }
+                        composable("navigation") { BottomNavigationBar(navController) }
                     }
                     // Test comment
                 }
