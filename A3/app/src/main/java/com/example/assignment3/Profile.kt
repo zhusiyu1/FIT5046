@@ -18,15 +18,20 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -69,8 +74,7 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?, health
         Row(horizontalArrangement = Arrangement.SpaceBetween,verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(bottom = 16.dp)
             .fillMaxWidth()) {
-//            BackButton(onClick = { goBack(navController!!)}, Modifier)
-            Row ( horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()){
+            Row ( horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth(0.9f)){
                 Text(
                     text = "Profile",
                     color = Color(0xff1f41bb),
@@ -80,6 +84,8 @@ fun Profile(modifier: Modifier = Modifier, navController: NavController?, health
                     ),
                 )
             }
+            EditIconButton(onClick = {Unit}, modifier = Modifier.fillMaxWidth(1f))
+
         }
         // Email field
         Column(modifier = Modifier.padding(bottom = 16.dp)) {
@@ -258,6 +264,23 @@ fun BackButton(
         )
     }
 }
+
+@Composable
+fun EditIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Edit,
+            contentDescription = "Edit",
+        )
+    }
+}
+
 
 
 @Preview
