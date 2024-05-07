@@ -60,6 +60,7 @@ class MainActivity : ComponentActivity() {
                         composable("navigation") { BottomNavigationBar(navController) }
                     }
                     // Test comment
+                    //22
                 }
             }
         }
