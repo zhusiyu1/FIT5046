@@ -82,7 +82,7 @@ fun Login(navController: NavController) {
             Text("Google Account")
         }
         Button(
-            onClick = { navController.navigate("Home") },
+            onClick = { navController.navigate("Navigation") },
             modifier = Modifier
                 .padding(end = 16.dp, bottom = 200.dp)
                 .align(Alignment.BottomCenter)

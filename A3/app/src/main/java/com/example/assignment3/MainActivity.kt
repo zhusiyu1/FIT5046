@@ -56,31 +56,24 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController, startDestination = "Welcome") {
                         composable("Welcome") { Welcome(navController) }
-                        //composable("login") { Login(navController) }
-                        //composable("home") { Home(navController, "asd") }
+                        composable("login") { Login(navController) }
+                        //composable("Home") { Home(navController, "asd") }
+                        composable("Navigation") { BottomNavigationBar(navController) }
+                        // Test comment
                     }
-                    // Test comment
                 }
             }
         }
     }
+
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+enum class Routes(val value: String) {
+    Home("Home"),
+    Map("Map"),
+    Profile("Profile")
 }
 
-
-@Composable
-fun GreetingPreview() {
-    Assignment3Theme {
-        Greeting("Android")
-    }
-}
 
 
 
