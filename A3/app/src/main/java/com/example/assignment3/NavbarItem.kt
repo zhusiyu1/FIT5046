@@ -2,8 +2,10 @@ package com.example.assignment3
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class NavBarItem (
@@ -20,14 +22,19 @@ data class NavBarItem (
             ),
             NavBarItem(
                 label = "Profile",
-                icon = Icons.Filled.AccountCircle,
+                icon = Icons.Filled.Person,
                 route = Routes.Profile.value
             ),
             NavBarItem(
                 label = "Map",
-                icon = Icons.Filled.Person,
+                icon = Icons.Filled.Place,
                 route = Routes.Map.value
             ),
+            NavBarItem(
+                label = "Appointment",
+                icon = Icons.Filled.DateRange,
+                route = Routes.Appointment.value
+            )
         )
     }
 }

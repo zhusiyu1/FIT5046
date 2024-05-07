@@ -78,7 +78,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 enum class Routes(val value: String) {
     Home("Home"),
     Map("Map"),
-    Profile("Profile")
+    Profile("Profile"),
+    Appointment("Appointment")
 }
 
 
