@@ -91,7 +91,7 @@ fun Login(navController: NavController) {
             Text("Login")
         }
         Button(
-            onClick = { },
+            onClick = {navController.navigate("Register") },
             modifier = Modifier
                 .padding(end = 16.dp, bottom = 150.dp)
                 .align(Alignment.BottomCenter)

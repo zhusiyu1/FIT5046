@@ -58,6 +58,8 @@ class MainActivity : ComponentActivity() {
                         composable("Welcome") { Welcome(navController) }
                         composable("login") { Login(navController) }
                         composable("navigation") { BottomNavigationBar(navController) }
+                        composable("Register") {  RegisterPage(navController) }
+
                     }
                     // Test comment
                     //22

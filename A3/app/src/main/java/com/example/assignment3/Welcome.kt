@@ -58,7 +58,7 @@ fun Welcome(navController: NavController) {
             )
         }
         Button(
-            onClick = { },
+            onClick = { navController.navigate("Register")  },
             modifier = Modifier
                 .padding(bottom = 220.dp)
                 .align(Alignment.BottomCenter)
