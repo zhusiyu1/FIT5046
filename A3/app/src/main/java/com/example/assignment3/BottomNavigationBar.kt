@@ -31,7 +31,7 @@ fun BottomNavigationBar(navController: NavController) {
                 val currentDestination = navBackStackEntry?.destination
                 NavBarItem().NavBarItems().forEach { navItem ->
                     BottomNavigationItem(
-                        icon = { Icon(Icons.Filled.Home, contentDescription =
+                        icon = { Icon(navItem.icon, contentDescription =
                         null) },
                         label = { Text(navItem.label) },
                         selected = currentDestination?.hierarchy?.any {
@@ -65,6 +65,9 @@ fun BottomNavigationBar(navController: NavController) {
 //            }
 //            composable(Routes.About.value) {
 //                Map(navController)
+//            }
+//            composable(Routes.Appointment.value) {
+//                Appointment(navController)
 //            }
         }
     }

@@ -71,7 +71,8 @@ class MainActivity : ComponentActivity() {
 enum class Routes(val value: String) {
     Home("Home"),
     Map("Map"),
-    Profile("Profile")
+    Profile("Profile"),
+    Appointment("Appointment")
 }
 
 
