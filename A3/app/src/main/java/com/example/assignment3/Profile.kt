@@ -109,7 +109,7 @@ fun Profile(
                     ),
                 )
             }
-            EditIconButton(onClick = { toggleEditing()}, modifier = Modifier.fillMaxWidth(1f))
+            EditIconButton(onClick = { toggleEditing() }, modifier = Modifier.fillMaxWidth(1f))
 
         }
         // Email field
@@ -126,7 +126,7 @@ fun Profile(
             Property1Active(
                 Modifier,
                 profileUiState.email,
-                onEmailChanged
+                onEmailChanged, edit
             )
         }
         // Username
@@ -141,7 +141,7 @@ fun Profile(
             )
 
             Property1Active(
-                Modifier, profileUiState.username, onUsernameChanged
+                Modifier, profileUiState.username, onUsernameChanged, edit
             )
         }
         // Fullname field
@@ -156,7 +156,7 @@ fun Profile(
             )
 
             Property1Active(
-                Modifier, profileUiState.fullName, onFullNameChanged
+                Modifier, profileUiState.fullName, onFullNameChanged, edit
             )
         }
         // Phone no field
@@ -173,7 +173,8 @@ fun Profile(
             Property1Active(
                 Modifier,
                 profileUiState.phone,
-                onPhoneChanged
+                onPhoneChanged,
+                edit
             )
         }
         // DOB field
@@ -190,7 +191,8 @@ fun Profile(
             Property1Active(
                 Modifier,
                 profileUiState.dob,
-                onDobChanged
+                onDobChanged,
+                edit
             )
         }
         // Address field
@@ -207,7 +209,8 @@ fun Profile(
             Property1Active(
                 Modifier,
                 profileUiState.address,
-                onAddressChanged
+                onAddressChanged,
+                edit
             )
         }
         if (edit) {
@@ -245,13 +248,14 @@ fun Profile(
 fun Property1Active(
     modifier: Modifier = Modifier,
     inputTextValue: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    editting: Boolean
 ) {
     OutlinedTextField(
         value = inputTextValue, onValueChange = { onValueChange(it) }, modifier = modifier
             .requiredWidth(width = 325.dp)
             .background(color = Color(0xfff7f8f9)),
-        enabled = false
+        enabled = editting
     )
 }
 

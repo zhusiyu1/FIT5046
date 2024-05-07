@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 
-class HealthViewModel: ViewModel() {
+class HealthViewModel : ViewModel() {
 
     // UI State
     private val _profileUiState = MutableStateFlow(ProfileUiState())
@@ -23,12 +23,12 @@ class HealthViewModel: ViewModel() {
     private lateinit var profileInformation: Array<Any>
 
     // TODO: make these vals private lateinit to be set inside of Profile.kt form
-    lateinit var email: String
-    lateinit var username: String
-    lateinit var fullName: String
-    lateinit var dob: String
-    lateinit var phone: String
-    lateinit var address: String
+    var email: String = profileUiState.value.email
+    var username: String = profileUiState.value.username
+    var fullName: String = profileUiState.value.fullName
+    var dob: String = profileUiState.value.dob
+    var phone: String = profileUiState.value.phone
+    var address: String = profileUiState.value.address
 
     // Update user profile
     fun updateUserProfile() {
@@ -36,7 +36,13 @@ class HealthViewModel: ViewModel() {
     }
 
     fun getUserInformation(): Array<Any> {
-        profileInformation = arrayOf(profileUiState.value.email, profileUiState.value.fullName, profileUiState.value.username, profileUiState.value.phone, profileUiState.value.address)
+        profileInformation = arrayOf(
+            profileUiState.value.email,
+            profileUiState.value.fullName,
+            profileUiState.value.username,
+            profileUiState.value.phone,
+            profileUiState.value.address
+        )
         return profileInformation
     }
 
