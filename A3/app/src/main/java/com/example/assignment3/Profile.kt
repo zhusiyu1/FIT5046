@@ -57,162 +57,137 @@ import com.example.assignment3.State.ProfileUiState
 fun Profile(modifier: Modifier = Modifier, navController: NavController?, healthViewModel: HealthViewModel = viewModel()) {
     val profileUiState by healthViewModel.profileUiState.collectAsState()
 
-    Box(
+    Column(
         modifier = modifier
-            .requiredWidth(width = 393.dp)
+            .fillMaxWidth()
             .fillMaxHeight()
             .clip(shape = RoundedCornerShape(50.dp))
             .background(color = Color.White)
+            .padding(vertical = 32.dp, horizontal = 32.dp),
+        horizontalAlignment = Alignment.Start
     ) {
-        Text(
-            text = "Profile",
-            color = Color(0xff1f41bb),
-            textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold),
-            modifier = Modifier
-                .align(alignment = Alignment.TopCenter)
-                .offset(
-                    x = 0.dp,
-                    y = 70.dp
-                ))
-        // Email field
-        Property1Active(
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 150.dp
-                ),
-            profileUiState.email)
-        // Fullname field
-        Property1Active(
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 239.dp
-                ), profileUiState.fullName)
-        // DOB field
-        Property1Active(
-            modifier = Modifier
-                .align(alignment = Alignment.TopCenter)
-                .offset(
-                    x = 0.dp,
-                    y = 329.dp
-                )
-                .requiredWidth(width = 325.dp)
-                .background(color = Color(0xfff7f8f9)),
-            profileUiState.dob)
-        // Address field
-        Property1Active(
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 419.dp
-                )
-                .requiredWidth(width = 325.dp)
-                .background(color = Color(0xfff7f8f9)),
-            profileUiState.address)
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 68.dp
-                )
-                .requiredSize(size = 41.dp)
-        ) {
+        Row(horizontalArrangement = Arrangement.SpaceBetween,verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .padding(bottom = 16.dp)
+            .fillMaxWidth()) {
             BackButton(onClick = { goBack(navController!!)}, Modifier)
-        }
-        Text(
-            text = "Email",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 126.dp
-                ))
-        Text(
-            text = "Full name",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 216.dp
-                )
-                .requiredWidth(width = 84.dp)
-        )
-        Text(
-            text = "Date of Birth",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 305.dp
-                ))
-        Text(
-            text = "Address",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 395.dp
-                ))
-        Text(
-            text = "Past Appointments",
-            color = Color.Black,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 497.dp
-                )
-                .requiredWidth(width = 158.dp)
-        )
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(
-                    x = 34.dp,
-                    y = 519.dp
-                )
-                .requiredWidth(width = 325.dp)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .background(color = Color(0xfff7f8f9)))
-        LazyColumn(modifier = Modifier
-            .align(alignment = Alignment.TopStart)
-            .offset(
-                x = 34.dp,
-                y = 540.dp
-            )
-            .requiredWidth(width = 272.dp)) {
-            items(3) { index ->
-                Text(text = "Doctor Appointment ${index}",color = Color.Black,
+            Row ( horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()){
+                Text(
+                    text = "Profile",
+                    color = Color(0xff1f41bb),
                     style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium), modifier = Modifier.padding(bottom = 16.dp))
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                )
+            }
+        }
+        // Email field
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Email",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium),
+            )
+
+            Property1Active(Modifier,
+                profileUiState.email
+            )
+        }
+        // Username
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Username",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium),
+            )
+
+            Property1Active(
+                Modifier, profileUiState.username
+            )
+        }
+        // Fullname field
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Full name",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium),
+            )
+
+            Property1Active(
+                Modifier, profileUiState.fullName
+            )
+        }
+        // Full name field
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Phone no",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium),
+            )
+
+            Property1Active(
+                Modifier, profileUiState.phone
+            )
+        }
+        // DOB field
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Date of Birth",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium),
+                )
+
+            Property1Active(
+                Modifier,
+                profileUiState.dob
+            )
+        }
+        // Address field
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Address",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium),
+               )
+
+            Property1Active(
+                Modifier,
+                profileUiState.address
+            )
+        }
+        Column(horizontalAlignment = Alignment.Start) {
+            Text(
+                text = "Past Appointments",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            LazyColumn {
+                items(3) { index ->
+                    Text(
+                        text = "Doctor Appointment ${index}", color = Color.Black,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                        ),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
             }
         }
     }
