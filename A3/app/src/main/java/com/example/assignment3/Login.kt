@@ -116,7 +116,6 @@ fun Login(navController: NavController) {
                         if (task.isSuccessful) {
                             navController.navigate("Navigation")
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
                         }
                     }

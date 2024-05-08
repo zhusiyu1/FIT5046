@@ -36,6 +36,7 @@ fun RegisterPage(navController: NavController) {
     var gender by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var mobilePhone by remember { mutableStateOf("") }
+    var auth = Firebase.auth
 
     Column(
         modifier = Modifier
@@ -134,7 +135,7 @@ fun RegisterPage(navController: NavController) {
                     password = password,
                     mobilePhone = mobilePhone
                 )
-                var auth = Firebase.auth
+
 
                 storeUserInDatabase(user)
                 auth.createUserWithEmailAndPassword(email, password)
