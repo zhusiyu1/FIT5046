@@ -45,7 +45,7 @@ import com.example.assignment3.HealthViewModel.HealthViewModel
 fun Profile(
     modifier: Modifier = Modifier,
     navController: NavController?,
-    healthViewModel: HealthViewModel = viewModel()
+    healthViewModel: HealthViewModel
 ) {
     val profileUiState by healthViewModel.profileUiState.collectAsState()
 
@@ -218,29 +218,6 @@ fun Profile(
                 Text(text = "Update")
             }
         }
-//        Column(horizontalAlignment = Alignment.Start) {
-//            Text(
-//                text = "Past Appointments",
-//                color = Color.Black,
-//                style = TextStyle(
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Medium
-//                ),
-//                textAlign = TextAlign.Start,
-//                modifier = Modifier.padding(bottom = 16.dp)
-//            )
-//            LazyColumn {
-//                items(3) { index ->
-//                    Text(
-//                        text = "Doctor Appointment ${index}", color = Color.Black,
-//                        style = TextStyle(
-//                            fontSize = 16.sp,
-//                        ),
-//                        modifier = Modifier.padding(bottom = 8.dp)
-//                    )
-//                }
-//            }
-//        }
     }
 }
 
@@ -257,63 +234,6 @@ fun Property1Active(
             .background(color = Color(0xfff7f8f9)),
         enabled = editting
     )
-}
-
-//@Composable
-//fun Property1Default1(modifier: Modifier = Modifier, profileUiState: ProfileUiState) {
-//    Row(
-//        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-//        verticalAlignment = Alignment.CenterVertically,
-//        modifier = modifier
-//            .requiredWidth(width = 325.dp)
-//            .requiredHeight(height = 50.dp)
-//            .clip(shape = RoundedCornerShape(10.dp))
-//            .background(color = Color(0xfff7f8f9))
-//            .border(
-//                border = BorderStroke(1.dp, Color(0xffe8ecf4)),
-//                shape = RoundedCornerShape(10.dp)
-//            )
-//            .padding(all = 20.dp)
-//    ) {
-//        Text(
-//            text = profileUiState.fullName,
-//            color = Color(0xff1e232c).copy(alpha = 0.56f),
-//            style = TextStyle(
-//                fontSize = 16.sp,
-//                fontWeight = FontWeight.Medium),
-//            modifier = Modifier
-//                .fillMaxWidth())
-//    }
-//}
-
-fun goBack(navController: NavController) {
-    navController.navigate("Welcome")
-}
-
-
-@Composable
-fun BackButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .requiredSize(size = 41.dp)
-            .clip(shape = RoundedCornerShape(12.dp))
-            .background(color = Color.White)
-            .border(
-                border = BorderStroke(1.dp, Color(0xffe8ecf4)),
-                shape = RoundedCornerShape(12.dp)
-            )
-            .clickable(onClick = onClick)
-    ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back Arrow",
-            tint = Color(0xff1e232c),
-            modifier = Modifier.padding(8.dp)
-        )
-    }
 }
 
 @Composable
@@ -336,5 +256,5 @@ fun EditIconButton(
 @Preview
 @Composable
 private fun ProfilePreview() {
-    Profile(Modifier, null)
+    Profile(Modifier, null, viewModel())
 }

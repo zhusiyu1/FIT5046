@@ -48,8 +48,7 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel) {
     val formatter = SimpleDateFormat("dd MM yyyy", Locale.ROOT)
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopStart
+        modifier = Modifier.fillMaxSize()
     ) {
         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Text(

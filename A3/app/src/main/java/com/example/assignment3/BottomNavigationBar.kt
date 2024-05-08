@@ -67,7 +67,7 @@ fun BottomNavigationBar(navController: NavController, healthViewModel: HealthVie
                 }
             }
             composable(Routes.Profile.value) {
-                Profile(Modifier, navController)
+                Profile(Modifier, navController, healthViewModel!!)
             }
 //            composable(Routes.Map.value) {
 //                Map(navController)
