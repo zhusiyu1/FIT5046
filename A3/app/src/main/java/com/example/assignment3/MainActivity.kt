@@ -42,10 +42,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.example.assignment3.Database.HealthBookerRoomDatabase
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val db by lazy { HealthBookerRoomDatabase.getDatabase(applicationContext) }
+
         setContent {
             Assignment3Theme {
                 val navController = rememberNavController()

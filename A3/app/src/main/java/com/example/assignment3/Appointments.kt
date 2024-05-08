@@ -95,7 +95,6 @@ fun Appointment(modifier: Modifier = Modifier, navController: NavController?) {
                     fontWeight = FontWeight.Medium
                 ),
             )
-            DatePicker()
         }
         Column(modifier = Modifier.padding(bottom=16.dp)) {
             Text(
@@ -129,22 +128,8 @@ fun Appointment(modifier: Modifier = Modifier, navController: NavController?) {
 @Composable
 fun DatePicker(modifier: Modifier = Modifier) {
     val locale: Locale = Locale("Australia")
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .requiredWidth(width = 325.dp)
-            .requiredHeight(height = 50.dp)
-            .clip(shape = RoundedCornerShape(10.dp))
-            .background(color = Color(0xfff7f8f9))
-            .border(
-                border = BorderStroke(1.dp, Color(0xffe8ecf4)),
-                shape = RoundedCornerShape(10.dp)
-            )
-            .padding(all = 20.dp)
-    ) {
-        DatePicker(state = DatePickerState(locale))
-    }
+
+    DatePicker(state = DatePickerState(locale))
 }
 
 @Preview

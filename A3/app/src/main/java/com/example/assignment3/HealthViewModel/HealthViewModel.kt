@@ -1,28 +1,38 @@
 package com.example.assignment3.HealthViewModel
 
-import android.provider.ContactsContract.Profile
-import android.util.MutableBoolean
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.room.Room
+import com.example.assignment3.DAO.BookingDao
+import com.example.assignment3.Database.HealthBookerRoomDatabase
+import com.example.assignment3.Entity.Booking
+import com.example.assignment3.Entity.Hospital
+import com.example.assignment3.Repository.HealthBookingRepository
 import com.example.assignment3.State.ProfileUiState
-import java.util.Date
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 
-class HealthViewModel : ViewModel() {
+class HealthViewModel(private val healthBookingRepository: HealthBookingRepository) : ViewModel() {
 
-    // UI State
+    init {
+        viewModelScope.launch {
+            healthBookingRepository.generate3Hospitals()
+        }
+    }
+
+    // ****************************************
+    //              UI State
+    // ****************************************
+
     private val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileUiState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
 
-    // Business logic
-
-    // Get user information from the store
-    private lateinit var profileInformation: Array<Any>
-
-    // TODO: make these vals private lateinit to be set inside of Profile.kt form
     var email: String = profileUiState.value.email
     var username: String = profileUiState.value.username
     var fullName: String = profileUiState.value.fullName
@@ -30,27 +40,22 @@ class HealthViewModel : ViewModel() {
     var phone: String = profileUiState.value.phone
     var address: String = profileUiState.value.address
 
+    // DB
+    val bookings: LiveData<List<Booking>> = healthBookingRepository.bookings.asLiveData()
+    val hospitals: LiveData<List<Hospital>> = healthBookingRepository.hospitals.asLiveData()
+
+
+    // ****************************************
+    //             Business logic
+    // ****************************************
+
     // Update user profile
     fun updateUserProfile() {
         println("${email}, ${username}: ${fullName} , ${fullName}, ${dob} , ${phone} ,$address}")
     }
 
-    fun getUserInformation(): Array<Any> {
-        profileInformation = arrayOf(
-            profileUiState.value.email,
-            profileUiState.value.fullName,
-            profileUiState.value.username,
-            profileUiState.value.phone,
-            profileUiState.value.address
-        )
-        return profileInformation
-    }
-
     // Create booking function.
-    // @params: Booking date, User Id, Doctor, Clinic Location
-    // This will take in booking date as timestamp? user id for identification,\
-    // doctor id for identification and clinic location id.
-    fun scheduleBooking(date: Any, userId: String, doctorId: Any, clinicIid: Any) {
-        return
+    fun scheduleBooking(booking: Booking) = viewModelScope.launch {
+        healthBookingRepository.insertBooking(booking)
     }
 }
