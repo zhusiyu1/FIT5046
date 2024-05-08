@@ -37,7 +37,8 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class HealthViewModel @Inject constructor(private val healthBookingRepository: HealthBookingRepository) : ViewModel() {
+class HealthViewModel @Inject constructor(private val healthBookingRepository: HealthBookingRepository) :
+    ViewModel() {
 
 //    init {
 //        viewModelScope.launch {
@@ -54,7 +55,7 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     val profileUiState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
 
     // Booking
-    private val _bookingUiState =  MutableStateFlow(BookingUiState())
+    private val _bookingUiState = MutableStateFlow(BookingUiState())
     val bookingUiState: StateFlow<BookingUiState> = _bookingUiState.asStateFlow()
 
     // User
@@ -62,7 +63,6 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     val userUiState: StateFlow<User> = _userUiState.asStateFlow()
 
     var username: String = profileUiState.value.username
-    var fullName: String = profileUiState.value.fullName
     var address: String = profileUiState.value.address
 
     // DB
@@ -75,31 +75,29 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     // ****************************************
 
     // Update user profile
-    fun updateUserProfile() {
+    fun updateUserProfile(updatedUser: User, updatedUsername: String, updatedAddress: String) {
         val user = Firebase.auth.currentUser
 
         val profileUpdates = userProfileChangeRequest {
             // https://firebase.google.com/docs/reference/kotlin/com/google/firebase/auth/UserProfileChangeRequest
             // Can only update username
-            displayName = username
+            displayName = updatedUsername
         }
+        user!!.updateProfile(profileUpdates)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    println("User profile updated.")
+                }
 
-        val updatedUser = User(
-            email = _userUiState.value.email,
-            firstName = _userUiState.value.firstName,
-            lastName = _userUiState.value.lastName,
-            dateOfBirth = _userUiState.value.dateOfBirth,
-            mobilePhone = _userUiState.value.mobilePhone,
-            password = _userUiState.value.password,
-            gender = _userUiState.value.gender,
-        )
 
-        // Get user object
-        // {firstName=sad, lastName=sad, password=123456789, gender=m, mobilePhone=123, dateOfBirth=14/05/2023, email=123456789@qq.com}
-        val database = FirebaseDatabase.getInstance()
-        database.reference.child("users").child(user!!.email!!.replace(".", "_")).setValue(updatedUser).addOnSuccessListener {
-            println("Successfully updated user")
-        }
+                // Get user object
+                // {firstName=sad, lastName=sad, password=123456789, gender=m, mobilePhone=123, dateOfBirth=14/05/2023, email=123456789@qq.com}
+                val database = FirebaseDatabase.getInstance()
+                database.reference.child("users").child(user!!.email!!.replace(".", "_"))
+                    .setValue(updatedUser).addOnSuccessListener {
+                        println("Successfully updated user")
+                    }
+            }
     }
 
     // Create booking function.
@@ -117,49 +115,12 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     fun getUserInfo() {
         val user = Firebase.auth.currentUser
 
-        val updatedUser = User(
-            email = _userUiState.value.email,
-            firstName = _userUiState.value.firstName,
-            lastName = _userUiState.value.lastName,
-            dateOfBirth = _userUiState.value.dateOfBirth,
-            mobilePhone = _userUiState.value.mobilePhone,
-            password = _userUiState.value.password,
-            gender = _userUiState.value.gender,
-        )
-
-        // Get user object
-        // {firstName=sad, lastName=sad, password=123456789, gender=m, mobilePhone=123, dateOfBirth=14/05/2023, email=123456789@qq.com}
         val database = FirebaseDatabase.getInstance()
-        database.reference.child("users").child(user!!.email!!.replace(".", "_")).get().addOnSuccessListener {
-            _userUiState.value = it.getValue(User::class.java)!!
-        }
-//        _userUiState.value =
+        database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
+            .addOnSuccessListener {
+                _userUiState.value = it.getValue(User::class.java)!!
+            }
     }
-
-    // Select Booking
-//    fun selectBooking(booking: Booking) = viewModelScope.launch {
-//        _bookingUiState.value.booking = booking
-//    }
-
-//    companion object {
-//        val Factory: ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                val repository = (this[APPLICATION_KEY] as MainActivity).repository
-//                HealthViewModel(
-//                    healthBookingRepository = repository,
-//                )
-//            }
-//        }
-//    }
 
 }
 
-//class HealthViewModelFactory(private val healthBookingRepository: HealthBookingRepository) : ViewModelProvider.Factory {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(HealthViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return HealthViewModel(healthBookingRepository) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//}

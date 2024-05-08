@@ -81,11 +81,15 @@ fun Profile(
         mutableStateOf(userUiState.mobilePhone)
     }
 
-
-    // Event handlers for input field changes
-    val onFullNameChanged: (String) -> Unit = { fullName ->
-        healthViewModel.fullName = fullName
+    var username by remember {
+        mutableStateOf(profileUiState.username)
     }
+
+    var address by remember {
+        mutableStateOf(profileUiState.address)
+    }
+
+
     val onUsernameChanged: (String) -> Unit = { username ->
         healthViewModel.username = username
     }
@@ -95,7 +99,18 @@ fun Profile(
 
 
     val updateProfile: () -> Unit = {
-        healthViewModel.updateUserProfile()
+        healthViewModel.updateUserProfile(User(
+            email = email,
+            firstName = firstName,
+            lastName = lastName,
+            dateOfBirth = dob,
+            gender = gender,
+            password = password,
+            mobilePhone = phone,
+        ),
+            updatedUsername = username,
+            updatedAddress = address
+        )
         edit = false
     }
 
@@ -165,7 +180,7 @@ fun Profile(
             )
 
             Property1Active(
-                Modifier, profileUiState.username, onUsernameChanged, edit
+                Modifier, username, onUsernameChanged, edit
             )
         }
         // First name field
@@ -262,7 +277,7 @@ fun Profile(
 
             Property1Active(
                 Modifier,
-                profileUiState.address,
+                address,
                 onAddressChanged,
                 edit
             )
