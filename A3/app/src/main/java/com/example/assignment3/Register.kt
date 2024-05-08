@@ -3,15 +3,18 @@ package com.example.assignment3
 import android.content.ContentValues.TAG
 import android.os.Build
 import android.util.Log
+import android.widget.DatePicker
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +39,7 @@ fun RegisterPage(navController: NavController) {
     var gender by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var mobilePhone by remember { mutableStateOf("") }
+    var auth = Firebase.auth
 
     Column(
         modifier = Modifier
@@ -84,9 +88,10 @@ fun RegisterPage(navController: NavController) {
         Spacer(modifier = Modifier.height(8.dp))
 
         // Date of Birth
-        DisplayDatePicker { selectedDate ->
-            dateOfBirth = selectedDate
-        }
+        DateOfBirthField(
+            dateOfBirth = dateOfBirth,
+            onDateSelected = { newDate -> dateOfBirth = newDate }
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -134,7 +139,7 @@ fun RegisterPage(navController: NavController) {
                     password = password,
                     mobilePhone = mobilePhone
                 )
-                var auth = Firebase.auth
+
 
                 storeUserInDatabase(user)
                 auth.createUserWithEmailAndPassword(email, password)
@@ -157,57 +162,42 @@ fun RegisterPage(navController: NavController) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+//
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DisplayDatePicker(onDateSelected: (String) -> Unit) {
+fun DateOfBirthField(dateOfBirth: String, onDateSelected: (String) -> Unit) {
+    val context = LocalContext.current
+    var showDatePicker by remember { mutableStateOf(false) }
     val calendar = Calendar.getInstance()
-    calendar.set(2024, 0, 1) // month (0) is January
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = Instant.now().toEpochMilli()
-    )
-    var showDatePicker by remember {
-        mutableStateOf(false)
-    }
-    var selectedDate by remember {
-        mutableStateOf(calendar.timeInMillis)
+
+    if (showDatePicker) {
+        android.app.DatePickerDialog(
+            context,
+            { _: DatePicker, year: Int, month: Int, day: Int ->
+                val newDate = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(
+                    GregorianCalendar(year, month, day).time
+                )
+                onDateSelected(newDate)
+                showDatePicker = false
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        if (showDatePicker) {
-            DatePickerDialog(
-                onDismissRequest = {
-                    showDatePicker = false
-                },
-                confirmButton = {
-                    TextButton(onClick = {
-                        showDatePicker = false
-                        selectedDate = datePickerState.selectedDateMillis ?: calendar.timeInMillis
-                        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
-                        onDateSelected(formatter.format(Date(selectedDate)))
-                    }) {
-                        Text(text = "OK")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        showDatePicker = false
-                    }) {
-                        Text(text = "Cancel")
-                    }
-                }
-            ) {
-                DatePicker(state = datePickerState)
+    OutlinedTextField(
+        value = dateOfBirth,
+        onValueChange = { },
+        readOnly = true,
+        label = { Text("Date of Birth") },
+        modifier = Modifier.fillMaxWidth(),
+        trailingIcon = {
+            IconButton(onClick = { showDatePicker = true }) {
+                Icon(imageVector = Icons.Filled.DateRange, contentDescription = "Select Date")
             }
         }
-
-        Button(onClick = { showDatePicker = true }) {
-            Text(text = "Enter Date of Birth")
-        }
-
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
-        Text(text = "Date of Birth: ${formatter.format(Date(selectedDate))}")
-    }
+    )
 }
 
 fun storeUserInDatabase(user: User) {
