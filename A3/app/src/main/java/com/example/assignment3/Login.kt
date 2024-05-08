@@ -38,16 +38,19 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.FirebaseDatabase
-
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 
 
 @Composable
 fun Login(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
+    var isValid by remember { mutableStateOf(false) }
 
 
     Box(
@@ -69,25 +72,31 @@ fun Login(navController: NavController) {
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { email = it
+                isValid = it.isNotEmpty()},
             label = { Text("Email") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 270.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+            isError = !isValid
         )
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { password = it
+                isValid = it.isNotEmpty()},
             label = { Text("Password") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 350.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next
-            )
+            keyboardOptions = KeyboardOptions.Default.copy(),
+            isError = !isValid
         )
+
+        if (!isValid) {
+            Text(text = "The input cannot be empty", color = Color.Red)
+        }
 
         Button(
             onClick = { },
@@ -109,7 +118,6 @@ fun Login(navController: NavController) {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
-
                         }
                     }
             },

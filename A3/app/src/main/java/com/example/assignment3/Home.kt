@@ -1,5 +1,7 @@
 package com.example.assignment3
 
+import android.content.ContentValues
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,14 +17,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
 @Composable
 fun Home(navController: NavController) {
-
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -39,16 +43,6 @@ fun Home(navController: NavController) {
             modifier = Modifier
                 .padding(top = 70.dp)
                 .align(Alignment.TopCenter)
-        )
-        Text(
-            text = "name",
-            color = Color.Black,
-            textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 25.sp,
-            ),
-            modifier = Modifier
-                .padding(top = 150.dp)
         )
         Text(
             text = "Your Appointments",
@@ -76,6 +70,3 @@ fun Home(navController: NavController) {
 
     }
 }
-//test
-//test1
-//test2
