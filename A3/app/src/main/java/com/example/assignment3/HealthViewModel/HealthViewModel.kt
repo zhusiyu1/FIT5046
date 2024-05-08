@@ -26,6 +26,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.assignment3.MainActivity
+import com.example.assignment3.User
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.auth.userProfileChangeRequest
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -51,11 +57,12 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     private val _bookingUiState =  MutableStateFlow(BookingUiState())
     val bookingUiState: StateFlow<BookingUiState> = _bookingUiState.asStateFlow()
 
-    var email: String = profileUiState.value.email
+    // User
+    private val _userUiState = MutableStateFlow(User())
+    val userUiState: StateFlow<User> = _userUiState.asStateFlow()
+
     var username: String = profileUiState.value.username
     var fullName: String = profileUiState.value.fullName
-    var dob: String = profileUiState.value.dob
-    var phone: String = profileUiState.value.phone
     var address: String = profileUiState.value.address
 
     // DB
@@ -69,7 +76,30 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
 
     // Update user profile
     fun updateUserProfile() {
-        println("${email}, ${username}: ${fullName} , ${fullName}, ${dob} , ${phone} ,$address}")
+        val user = Firebase.auth.currentUser
+
+        val profileUpdates = userProfileChangeRequest {
+            // https://firebase.google.com/docs/reference/kotlin/com/google/firebase/auth/UserProfileChangeRequest
+            // Can only update username
+            displayName = username
+        }
+
+        val updatedUser = User(
+            email = _userUiState.value.email,
+            firstName = _userUiState.value.firstName,
+            lastName = _userUiState.value.lastName,
+            dateOfBirth = _userUiState.value.dateOfBirth,
+            mobilePhone = _userUiState.value.mobilePhone,
+            password = _userUiState.value.password,
+            gender = _userUiState.value.gender,
+        )
+
+        // Get user object
+        // {firstName=sad, lastName=sad, password=123456789, gender=m, mobilePhone=123, dateOfBirth=14/05/2023, email=123456789@qq.com}
+        val database = FirebaseDatabase.getInstance()
+        database.reference.child("users").child(user!!.email!!.replace(".", "_")).setValue(updatedUser).addOnSuccessListener {
+            println("Successfully updated user")
+        }
     }
 
     // Create booking function.

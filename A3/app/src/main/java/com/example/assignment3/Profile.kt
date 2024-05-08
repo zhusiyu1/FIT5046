@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
@@ -53,8 +55,32 @@ fun Profile(
     healthViewModel: HealthViewModel
 ) {
     val profileUiState by healthViewModel.profileUiState.collectAsState()
+    val userUiState by healthViewModel.userUiState.collectAsState()
 
     var edit by remember { mutableStateOf(false) }
+
+    var email by remember {
+        mutableStateOf(userUiState.email)
+    }
+    var firstName by remember {
+        mutableStateOf(userUiState.firstName)
+    }
+    var lastName by remember {
+        mutableStateOf(userUiState.lastName)
+    }
+    var dob by remember {
+        mutableStateOf(userUiState.dateOfBirth)
+    }
+    var gender by remember {
+        mutableStateOf(userUiState.gender)
+    }
+    var password by remember {
+        mutableStateOf(userUiState.password)
+    }
+    var phone by remember {
+        mutableStateOf(userUiState.mobilePhone)
+    }
+
 
     // Event handlers for input field changes
     val onFullNameChanged: (String) -> Unit = { fullName ->
@@ -63,18 +89,10 @@ fun Profile(
     val onUsernameChanged: (String) -> Unit = { username ->
         healthViewModel.username = username
     }
-    val onEmailChanged: (String) -> Unit = { email ->
-        healthViewModel.email = email
-    }
-    val onPhoneChanged: (String) -> Unit = { phone ->
-        healthViewModel.phone = phone
-    }
-    val onDobChanged: (String) -> Unit = { dob ->
-        healthViewModel.dob = dob
-    }
     val onAddressChanged: (String) -> Unit = { address ->
         healthViewModel.address = address
     }
+
 
     val updateProfile: () -> Unit = {
         healthViewModel.updateUserProfile()
@@ -91,7 +109,8 @@ fun Profile(
             .fillMaxHeight()
             .clip(shape = RoundedCornerShape(50.dp))
             .background(color = Color.White)
-            .padding(vertical = 32.dp, horizontal = 32.dp),
+            .padding(vertical = 32.dp, horizontal = 32.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.Start
     ) {
         Row(
@@ -130,8 +149,8 @@ fun Profile(
 
             Property1Active(
                 Modifier,
-                profileUiState.email,
-                onEmailChanged, edit
+                email,
+                { email = it }, edit
             )
         }
         // Username
@@ -149,10 +168,10 @@ fun Profile(
                 Modifier, profileUiState.username, onUsernameChanged, edit
             )
         }
-        // Fullname field
+        // First name field
         Column(modifier = Modifier.padding(bottom = 16.dp)) {
             Text(
-                text = "Full name",
+                text = "First name",
                 color = Color.Black,
                 style = TextStyle(
                     fontSize = 16.sp,
@@ -161,13 +180,13 @@ fun Profile(
             )
 
             Property1Active(
-                Modifier, profileUiState.fullName, onFullNameChanged, edit
+                Modifier, firstName, {firstName = it }, edit
             )
         }
-        // Phone no field
+        // Last name field
         Column(modifier = Modifier.padding(bottom = 16.dp)) {
             Text(
-                text = "Phone no",
+                text = "Last name",
                 color = Color.Black,
                 style = TextStyle(
                     fontSize = 16.sp,
@@ -176,10 +195,7 @@ fun Profile(
             )
 
             Property1Active(
-                Modifier,
-                profileUiState.phone,
-                onPhoneChanged,
-                edit
+                Modifier, lastName, { lastName = it}, edit
             )
         }
         // DOB field
@@ -195,8 +211,41 @@ fun Profile(
 
             Property1Active(
                 Modifier,
-                profileUiState.dob,
-                onDobChanged,
+                dob,
+                { dob = it },
+                edit
+            )
+        }
+        // Gender
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Gender",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+            )
+
+            Property1Active(
+                Modifier, gender, { gender = it}, edit
+            )
+        }
+        // Phone no field
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Phone no",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+            )
+
+            Property1Active(
+                Modifier,
+                phone,
+                { phone = it},
                 edit
             )
         }
@@ -216,6 +265,20 @@ fun Profile(
                 profileUiState.address,
                 onAddressChanged,
                 edit
+            )
+        }
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Text(
+                text = "Password",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+            )
+
+            Property1Active(
+                Modifier, password, { password = it}, edit
             )
         }
         if (edit) {
