@@ -89,11 +89,13 @@ class MainActivity() : ComponentActivity() {
                 ) {
                     NavHost(navController, startDestination = "Welcome") {
                         composable("Welcome") { Welcome(navController) }
-                        composable("login") { Login(navController) }
-                        composable("navigation") { BottomNavigationBar(navController, healthViewModel) }
+                        composable("Login") { Login(navController) }
+                        composable("Navigation") { BottomNavigationBar(navController) }
+                        composable("Home") { Home(navController) }
+                        composable("Register") { RegisterPage(navController) }
+
                     }
-                    // Test comment
-                    //22
+
                 }
             }
         }

@@ -31,10 +31,11 @@ data class NavBarItem (
                 route = Routes.Map.value
             ),
             NavBarItem(
-                label = "Appointment",
+                label = "Booking",
                 icon = Icons.Filled.DateRange,
                 route = Routes.Appointment.value
-            )
+            ),
+
         )
     }
 }
