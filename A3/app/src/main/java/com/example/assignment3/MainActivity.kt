@@ -3,6 +3,7 @@ package com.example.assignment3
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,13 +44,40 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import com.example.assignment3.DAO.BookingDao
+import com.example.assignment3.DAO.HospitalDao
 import com.example.assignment3.Database.HealthBookerRoomDatabase
+import com.example.assignment3.HealthViewModel.HealthViewModel
+import com.example.assignment3.Repository.HealthBookingRepository
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainActivity : ComponentActivity() {
+@AndroidEntryPoint
+class MainActivity() : ComponentActivity() {
+
+    val healthViewModel: HealthViewModel by viewModels()
+
+    @Inject lateinit var hospitalDao: HospitalDao
+    @Inject lateinit var bookingDao: BookingDao
+    @Inject lateinit var healthBookingRepository: HealthBookingRepository
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val db by lazy { HealthBookerRoomDatabase.getDatabase(applicationContext) }
+//        healthViewModel.create
+        val databaseScope = CoroutineScope(Dispatchers.IO)
+        println("In Main")
+        // Launch a coroutine to call the generate3Hospitals function
+        databaseScope.launch {
+            val h = healthBookingRepository.hospitals
+            println("Hospitals: ${h}")
+//            healthBookingRepository.generate3Hospitals()
+        }
+
 
         setContent {
             Assignment3Theme {
@@ -62,7 +90,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController, startDestination = "Welcome") {
                         composable("Welcome") { Welcome(navController) }
                         composable("login") { Login(navController) }
-                        composable("navigation") { BottomNavigationBar(navController) }
+                        composable("navigation") { BottomNavigationBar(navController, healthViewModel) }
                     }
                     // Test comment
                     //22

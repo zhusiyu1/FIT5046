@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt") version "1.9.0"
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -35,6 +37,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+
     }
     buildFeatures {
         compose = true
@@ -50,6 +53,7 @@ android {
 }
 
 dependencies {
+    val room_version = "2.6.1"
 
     implementation("androidx.compose.material:material:1.6.3")
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -63,6 +67,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.room:room-common:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -77,4 +82,19 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.6.7")
+    implementation("androidx.compose.runtime:runtime-rxjava3:1.6.7")
+
+
+//    kapt("androidx.room:room-compiler:$room_version")
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

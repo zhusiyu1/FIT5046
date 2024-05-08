@@ -11,6 +11,6 @@ data class Booking (
     @PrimaryKey val uid: Int,
     @ColumnInfo(name = "date") val bookingDate: String,
     @ColumnInfo(name = "time") val bookingTime: String,
-    @ColumnInfo(name = "location") val bookingLocation: Address,
+    @ColumnInfo(name = "location") val bookingLocation: String,
     @ColumnInfo(name = "user") val bookingUser : String,
 )

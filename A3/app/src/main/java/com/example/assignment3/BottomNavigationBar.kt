@@ -19,9 +19,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.assignment3.HealthViewModel.HealthViewModel
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun BottomNavigationBar(navController: NavController, healthViewModel: HealthViewModel?) {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
@@ -61,13 +62,13 @@ fun BottomNavigationBar(navController: NavController) {
                 Home(navController,"")
             }
             composable(Routes.Profile.value) {
-                Profile(Modifier, navController, )
+                Profile(Modifier, navController)
             }
 //            composable(Routes.About.value) {
 //                Map(navController)
 //            }
             composable(Routes.Appointment.value) {
-                Appointment(Modifier, navController)
+                Appointment(Modifier, navController, healthViewModel!!)
             }
         }
     }
