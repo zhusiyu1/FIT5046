@@ -1,5 +1,7 @@
 package com.example.assignment3
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -21,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.assignment3.HealthViewModel.HealthViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BottomNavigationBar(navController: NavController, healthViewModel: HealthViewModel?) {
     val navController = rememberNavController()
@@ -59,7 +62,9 @@ fun BottomNavigationBar(navController: NavController, healthViewModel: HealthVie
             Modifier.padding(paddingValues)
         ) {
             composable(Routes.Home.value) {
-                Home(navController)
+                if (healthViewModel != null) {
+                    Home(navController, healthViewModel)
+                }
             }
             composable(Routes.Profile.value) {
                 Profile(Modifier, navController)

@@ -9,5 +9,4 @@ data class Hospital (
     @PrimaryKey val uid: Int,
     @ColumnInfo(name = "hospital_name") val name: String,
     @ColumnInfo(name = "hospital_address") val address: String
-
 )

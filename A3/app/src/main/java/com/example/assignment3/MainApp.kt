@@ -8,7 +8,6 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class MainApp: Application() {
-
     val db by lazy {HealthBookerRoomDatabase.getDatabase(applicationContext)}
     val repository by lazy {HealthBookingRepository(db.hospitalDao(), db.bookingDao())}
 

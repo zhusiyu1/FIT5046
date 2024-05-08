@@ -1,6 +1,7 @@
 package com.example.assignment3.Database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -29,6 +30,7 @@ abstract class HealthBookerRoomDatabase : RoomDatabase() {
                     HealthBookerRoomDatabase::class.java,
                     "health_booker_database"
                 )
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

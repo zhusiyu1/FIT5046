@@ -68,14 +68,13 @@ class MainActivity() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        healthViewModel.create
+//      applicationContext.deleteDatabase("HealthBookerRoomDatabase")
+
         val databaseScope = CoroutineScope(Dispatchers.IO)
         println("In Main")
         // Launch a coroutine to call the generate3Hospitals function
         databaseScope.launch {
-            val h = healthBookingRepository.hospitals
-            println("Hospitals: ${h}")
-//            healthBookingRepository.generate3Hospitals()
+            healthBookingRepository.generate3Hospitals()
         }
 
 
@@ -90,8 +89,8 @@ class MainActivity() : ComponentActivity() {
                     NavHost(navController, startDestination = "Welcome") {
                         composable("Welcome") { Welcome(navController) }
                         composable("Login") { Login(navController) }
-                        composable("Navigation") { BottomNavigationBar(navController) }
-                        composable("Home") { Home(navController) }
+                        composable("Navigation") { BottomNavigationBar(navController, healthViewModel) }
+                        composable("Home") { Home(navController, healthViewModel) }
                         composable("Register") { RegisterPage(navController) }
 
                     }
@@ -116,6 +115,7 @@ enum class Routes(val value: String) {
     Map("Map"),
     Profile("Profile"),
     Appointment("Appointment")
+//    Appointment("Booking"),
 }
 
 

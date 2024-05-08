@@ -13,10 +13,12 @@ class HealthBookingRepository @Inject constructor(private val hospitalDao: Hospi
     val bookings: Flow<List<Booking>>  = bookingDao.getAll()
     val hospitals: Flow<List<Hospital>> = hospitalDao.getAll()
 
+    @WorkerThread
     suspend fun insertBooking(booking: Booking) {
         bookingDao.insertAll(booking)
     }
 
+    @WorkerThread
     suspend fun insertHospital(hospital: Hospital) {
         hospitalDao.insertAll(hospital)
     }

@@ -15,6 +15,5 @@ interface BookingDao {
 
     @WorkerThread
     @Insert
-    fun insertAll(vararg bookings: Booking)
-
+    suspend fun insertAll(vararg bookings: Booking)
 }

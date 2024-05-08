@@ -1,5 +1,6 @@
 package com.example.assignment3.HealthViewModel
 
+import androidx.annotation.WorkerThread
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -72,7 +73,9 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     }
 
     // Create booking function.
+    @WorkerThread
     fun scheduleBooking(booking: Booking) = viewModelScope.launch {
+        println("Schedule Booking ${booking}")
         healthBookingRepository.insertBooking(booking)
     }
 
@@ -82,9 +85,9 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     }
 
     // Select Booking
-    fun selectBooking(booking: Booking) = viewModelScope.launch {
-        _bookingUiState.value.booking = booking
-    }
+//    fun selectBooking(booking: Booking) = viewModelScope.launch {
+//        _bookingUiState.value.booking = booking
+//    }
 
 //    companion object {
 //        val Factory: ViewModelProvider.Factory = viewModelFactory {

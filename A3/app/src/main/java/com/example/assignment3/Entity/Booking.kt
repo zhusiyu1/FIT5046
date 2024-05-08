@@ -8,9 +8,11 @@ import androidx.room.PrimaryKey
 @Entity
 data class Booking (
     //TODO change appointment to booking
-    @PrimaryKey val uid: Int,
-    @ColumnInfo(name = "date") val bookingDate: String,
+    @PrimaryKey(autoGenerate = true) val uid: Int = 0,
+    @ColumnInfo(name = "date") val bookingDate: Long,
     @ColumnInfo(name = "time") val bookingTime: String,
-    @ColumnInfo(name = "location") val bookingLocation: String,
+    @ColumnInfo(name = "location_id") val bookingLocationId: Int,
+    @ColumnInfo(name = "location_name") val bookingLocationName: String,
+    @ColumnInfo(name = "location_address") val bookingLocationAddress: String,
     @ColumnInfo(name = "user") val bookingUser : String,
 )
