@@ -1,5 +1,8 @@
 package com.example.assignment3
 
+import android.content.ContentValues.TAG
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,11 +35,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.FirebaseDatabase
+
+
 
 @Composable
 fun Login(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -53,6 +66,7 @@ fun Login(navController: NavController) {
                 .padding(top = 150.dp)
                 .align(Alignment.TopCenter)
         )
+
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -62,6 +76,7 @@ fun Login(navController: NavController) {
                 .padding(top = 270.dp),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
         )
+
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -73,6 +88,7 @@ fun Login(navController: NavController) {
                 imeAction = ImeAction.Next
             )
         )
+
         Button(
             onClick = { },
             modifier = Modifier
@@ -81,8 +97,22 @@ fun Login(navController: NavController) {
         ) {
             Text("Google Account")
         }
+
+
         Button(
-            onClick = { navController.navigate("Navigation") },
+            onClick = {
+                val auth = FirebaseAuth.getInstance()
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            navController.navigate("Navigation")
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.exception)
+
+                        }
+                    }
+            },
             modifier = Modifier
                 .padding(end = 16.dp, bottom = 200.dp)
                 .align(Alignment.BottomCenter)
@@ -90,6 +120,9 @@ fun Login(navController: NavController) {
         ) {
             Text("Login")
         }
+
+
+
         Button(
             onClick = {navController.navigate("Register") },
             modifier = Modifier

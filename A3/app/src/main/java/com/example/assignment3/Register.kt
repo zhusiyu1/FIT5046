@@ -1,6 +1,8 @@
 package com.example.assignment3
 
+import android.content.ContentValues.TAG
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.assignment3.ui.theme.Assignment3Theme
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -130,7 +134,20 @@ fun RegisterPage(navController: NavController) {
                     password = password,
                     mobilePhone = mobilePhone
                 )
+                var auth = Firebase.auth
+
                 storeUserInDatabase(user)
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener{ task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success")
+                            val user = auth.currentUser
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                        }
+                    }
                 navController.navigate("Login")
             },
             modifier = Modifier.fillMaxWidth()

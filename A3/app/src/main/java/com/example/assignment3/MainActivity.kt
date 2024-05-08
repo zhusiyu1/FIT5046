@@ -56,13 +56,13 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController, startDestination = "Welcome") {
                         composable("Welcome") { Welcome(navController) }
-                        composable("login") { Login(navController) }
-                        composable("navigation") { BottomNavigationBar(navController) }
-                        composable("Register") {  RegisterPage(navController) }
+                        composable("Login") { Login(navController) }
+                        composable("Navigation") { BottomNavigationBar(navController) }
+                        composable("Home") { Home(navController) }
+                        composable("Register") { RegisterPage(navController) }
 
                     }
-                    // Test comment
-                    //22
+
                 }
             }
         }
@@ -82,7 +82,7 @@ enum class Routes(val value: String) {
     Home("Home"),
     Map("Map"),
     Profile("Profile"),
-    Appointment("Appointment")
+    Appointment("Booking"),
 }
 
 

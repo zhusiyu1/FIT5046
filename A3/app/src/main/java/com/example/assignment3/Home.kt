@@ -15,10 +15,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 
 @Composable
-fun Home(navController: NavController, name: String) {
+fun Home(navController: NavController) {
+
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopStart
@@ -36,7 +41,7 @@ fun Home(navController: NavController, name: String) {
                 .align(Alignment.TopCenter)
         )
         Text(
-            text = name,
+            text = "name",
             color = Color.Black,
             textAlign = TextAlign.Center,
             style = TextStyle(

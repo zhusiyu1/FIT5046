@@ -58,12 +58,12 @@ fun BottomNavigationBar(navController: NavController) {
             Modifier.padding(paddingValues)
         ) {
             composable(Routes.Home.value) {
-                Home(navController,"")
+                Home(navController)
             }
             composable(Routes.Profile.value) {
                 Profile(Modifier, navController, )
             }
-//            composable(Routes.About.value) {
+//            composable(Routes.Map.value) {
 //                Map(navController)
 //            }
             composable(Routes.Appointment.value) {
