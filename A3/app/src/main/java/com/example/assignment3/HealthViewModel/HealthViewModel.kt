@@ -116,10 +116,17 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
         val user = Firebase.auth.currentUser
 
         val database = FirebaseDatabase.getInstance()
-        database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
-            .addOnSuccessListener {
-                _userUiState.value = it.getValue(User::class.java)!!
-            }
+        try {
+            database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
+                .addOnSuccessListener {
+                    _userUiState.value = it.getValue(User::class.java)!!
+                }.addOnFailureListener() {
+                    println("No user found")
+                }
+        }
+        catch (e: Exception) {
+            println("No user found")
+        }
     }
 
 }

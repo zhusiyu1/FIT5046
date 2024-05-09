@@ -133,7 +133,6 @@ fun Appointment(
             .background(color = Color.White)
             .padding(vertical = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-
         ) {
         Text(
             text = "Book an Appointment",
@@ -145,20 +144,29 @@ fun Appointment(
             ),
             modifier = Modifier.padding(bottom = 32.dp)
         )
-        Column(modifier = Modifier.padding(bottom = 16.dp)) {
-            Text(
-                text = "Date",
-                color = Color.Black,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-            )
-            DatePickerComponent { date ->
-                selectedDate = date
+        Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column() {
+                Text(
+                    text = "Date",
+                    color = Color.Black,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    modifier = Modifier.fillMaxWidth(0.8f)
+                )
+            }
+            Column(
+                modifier = Modifier.padding(bottom = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                DatePickerComponent { date ->
+                    selectedDate = date
+                }
             }
         }
-        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "Time",
                 color = Color.Black,
@@ -166,13 +174,21 @@ fun Appointment(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 ),
+                modifier = Modifier.fillMaxWidth(0.8f)
+
             )
-            TimePickerComponent { time ->
-                selectedTime = time
+            Column(
+                modifier = Modifier.padding(bottom = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                TimePickerComponent { time ->
+                    selectedTime = time
+                }
             }
         }
 
-        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        Column(modifier = Modifier.padding(bottom = 32.dp)) {
             Text(
                 text = "Hospital",
                 color = Color(0xff1e232c),
@@ -182,7 +198,12 @@ fun Appointment(
                 )
             )
             Box(modifier = Modifier.clickable { expanded = true }) {
-                Property1Default1(Modifier)
+                if (selectedHospital != null) {
+                    Property1Default1(Modifier, selectedHospital!!.name)
+                } else {
+                    Property1Default1(Modifier, "Monash Campus Medical Center (Clayton)")
+                }
+
             }
             DropdownMenu(
                 expanded = expanded,
@@ -196,17 +217,6 @@ fun Appointment(
                 }
             }
         }
-//        Column(modifier = Modifier.padding(bottom=16.dp)) {
-//            Text(
-//                text = "Location",
-//                color = Color.Black,
-//                style = TextStyle(
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Medium
-//                ),
-//            )
-//            Property1Active(Modifier, "Location", { }, edit)
-//        }
         Button(onClick = {
             book()
         }) {
@@ -216,7 +226,7 @@ fun Appointment(
 }
 
 @Composable
-fun Property1Default1(modifier: Modifier = Modifier) {
+fun Property1Default1(modifier: Modifier = Modifier, selectedHospitalName: String) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
         verticalAlignment = Alignment.CenterVertically,
@@ -226,11 +236,11 @@ fun Property1Default1(modifier: Modifier = Modifier) {
                 border = BorderStroke(1.dp, Color(0xffe8ecf4)),
                 shape = RoundedCornerShape(10.dp)
             )
-            .requiredWidth(290.dp)
+            .fillMaxWidth(0.8f)
             .padding(all = 20.dp)
     ) {
         Text(
-            text = "Monash Campus Medical Center (Clayton)",
+            text = selectedHospitalName,
             color = Color(0xff1e232c).copy(alpha = 0.56f),
             style = TextStyle(
                 fontSize = 16.sp,
@@ -248,7 +258,7 @@ fun Property1Default1(modifier: Modifier = Modifier) {
 fun DatePickerComponent(onDateSelected: (Long) -> Unit) {
     val calendar = Calendar.getInstance()
     calendar.set(2024, 0, 1) // month (0) is January
-
+    calendar.set(LocalDate.now().year, LocalDate.now().monthValue - 1, LocalDate.now().dayOfMonth)
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Instant.now().toEpochMilli(),
@@ -260,7 +270,7 @@ fun DatePickerComponent(onDateSelected: (Long) -> Unit) {
         mutableStateOf(calendar.timeInMillis)
     }
 
-    val formatter = SimpleDateFormat("d/MMM/YYYY", Locale.ROOT)
+    val formatter = SimpleDateFormat("d/MM/Y", Locale.ROOT)
     val formattedDate = formatter.format(Date(selectedDate))
 
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -298,20 +308,23 @@ fun DatePickerComponent(onDateSelected: (Long) -> Unit) {
         value = formattedDate,
         onValueChange = {},
         readOnly = true,
-        modifier = Modifier.clickable { showDatePicker = true },
+        modifier = Modifier.clickable { showDatePicker = true }.fillMaxWidth(0.8f),
         enabled = false,
         label = { "Select Date" },
+
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterial3Api
 @Composable
 fun TimePickerComponent(onTimeSelected: (String) -> Unit) {
     val calendar = Calendar.getInstance()
     calendar.set(2024, 0, 1) // month (0) is January
 
-    var selectedHour by remember { mutableStateOf("") }
-    var selectedMinute by remember { mutableStateOf("") }
+    val now = LocalTime.now()
+    var selectedHour by remember { mutableStateOf(now.hour.toString()) }
+    var selectedMinute by remember { mutableStateOf(now.minute.toString()) }
 
     var showTimePicker by remember {
         mutableStateOf(false)
@@ -337,17 +350,13 @@ fun TimePickerComponent(onTimeSelected: (String) -> Unit) {
                 cal.get(Calendar.MINUTE),
                 true,
             ).show()
-//            TimePicker(state = timePickerState)
         }
 
-//              {
-//                TimePicker(LocalContext.current, state = timePickerState, layoutType = TimePickerLayoutType.Vertical)
-//            }.
         OutlinedTextField(
             value = "${selectedHour}: ${selectedMinute}",
             onValueChange = {},
             readOnly = true,
-            modifier = Modifier.clickable { showTimePicker = true },
+            modifier = Modifier.clickable { showTimePicker = true }.fillMaxWidth(0.8f),
             label = { Text("Select Time") },
             enabled = false
         )

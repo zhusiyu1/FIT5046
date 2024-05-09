@@ -152,7 +152,7 @@ fun Profile(
 
         }
         // Email field
-        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        Column(modifier = Modifier.padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "Email",
                 color = Color.Black,
