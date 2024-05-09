@@ -149,26 +149,38 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     fun getUserInfo() {
         val user = Firebase.auth.currentUser
 
-        viewModelScope.launch {
-            val database = FirebaseDatabase.getInstance()
-            try {
-                database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
-                    .addOnSuccessListener {
-                        _userUiState.value = it.getValue(User::class.java)!!
+        if (user != null) {
+
+            val isGoogleSignIn = user.providerData.any { it.providerId == "google.com" }
+
+            if (!isGoogleSignIn) {
+                viewModelScope.launch {
+
+                    val database = FirebaseDatabase.getInstance()
+                    try {
+                        database.reference.child("users").child(user!!.email!!.replace(".", "_"))
+                            .get()
+                            .addOnSuccessListener {
+                                _userUiState.value = it.getValue(User::class.java)!!
 //                        _userUiState.value = it.getValue(User::class.java)!!
-                    }.addOnFailureListener() {
+                            }.addOnFailureListener() {
+                                println("No user found")
+                            }
+                    } catch (e: Exception) {
                         println("No user found")
                     }
-            } catch (e: Exception) {
-                println("No user found")
+                }
+            } else {
+                println("isGoogleSignIn: $isGoogleSignIn, ${user.email}")
             }
-
         }
     }
 
     fun resetUserUiState() {
         _userUiState.value = User()
     }
+    
+    // Sign in
 
 }
 

@@ -1,7 +1,9 @@
 package com.example.assignment3
 
 import android.app.PendingIntent.getActivity
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -51,6 +53,14 @@ import com.example.assignment3.DAO.HospitalDao
 import com.example.assignment3.Database.HealthBookerRoomDatabase
 import com.example.assignment3.HealthViewModel.HealthViewModel
 import com.example.assignment3.Repository.HealthBookingRepository
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,6 +76,7 @@ class MainActivity() : ComponentActivity() {
     @Inject lateinit var bookingDao: BookingDao
     @Inject lateinit var healthBookingRepository: HealthBookingRepository
 
+    private val googleSignInRequestCode = 234
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +89,22 @@ class MainActivity() : ComponentActivity() {
         databaseScope.launch {
             healthBookingRepository.generate3Hospitals()
         }
+
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.web_client_id))
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(this,gso)
+//
+//        val googleSignInBtn = findViewById<SignInButton>(R.id.googleSignInBtn)
+//        googleSignInBtn.setOnClickListener {
+//            val signInIntent =  googleSignInClient.signInIntent
+//            startActivityForResult(signInIntent,googleSignInRequestCode)
+//        }
+
+
 
         setContent {
             Assignment3Theme {
@@ -98,6 +125,42 @@ class MainActivity() : ComponentActivity() {
             }
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode){
+            googleSignInRequestCode -> {
+                try {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                    val account = task.getResult(ApiException::class.java)
+                    firebaseAuthWithGoogle(account)
+
+                }catch (e:ApiException){
+                    e.printStackTrace()
+                    e.message?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
+                }
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken,null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Login Successful",Toast.LENGTH_SHORT).show()
+                val mainIntent = Intent(this,MainActivity::class.java)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(mainIntent)
+                finish()
+            }
+            .addOnFailureListener {
+                it.printStackTrace()
+                it.message?.let { it1 -> Toast.makeText(this, it1,Toast.LENGTH_SHORT).show() }
+            }
+    }
+
 }
 
 @Composable

@@ -34,10 +34,13 @@ import com.google.firebase.ktx.Firebase
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.assignment3.Entity.Booking
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -48,6 +51,12 @@ import java.util.Locale
 fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltViewModel()) {
 
     val bookings = healthViewModel.bookings.observeAsState().value
+
+    val updatedBookings by remember {
+        derivedStateOf {
+            bookings
+        }
+    }
 
     val formatter = SimpleDateFormat("dd MM yyyy", Locale.ROOT)
 
