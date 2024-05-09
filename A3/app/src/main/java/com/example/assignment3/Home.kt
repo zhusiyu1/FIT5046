@@ -35,6 +35,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -44,7 +45,6 @@ import java.util.Locale
 @Composable
 fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltViewModel()) {
 
-    healthViewModel.getUserInfo()
     val bookings = healthViewModel.bookings.observeAsState().value
 
     val formatter = SimpleDateFormat("dd MM yyyy", Locale.ROOT)

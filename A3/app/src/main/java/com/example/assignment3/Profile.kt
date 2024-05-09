@@ -69,31 +69,31 @@ fun Profile(
 
     var edit by remember { mutableStateOf(false) }
 
-    var email by remember(updatedUserState) {
+    var email by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.first.email)
     }
-    var firstName by remember(updatedUserState) {
+    var firstName by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.first.firstName)
     }
-    var lastName by remember(updatedUserState) {
+    var lastName by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.first.lastName)
     }
-    var dob by remember(updatedUserState) {
+    var dob by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.first.dateOfBirth)
     }
-    var gender by remember(updatedUserState) {
+    var gender by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.first.gender)
     }
-    var password by remember(updatedUserState) {
+    var password by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.first.password)
     }
-    var phone by remember(updatedUserState) {
+    var phone by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.first.mobilePhone)
     }
-    var username by remember(updatedUserState) {
+    var username by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.second.username)
     }
-    var address by remember(updatedUserState) {
+    var address by remember(updatedUserState,navControllerMainAcitivity) {
         mutableStateOf(updatedUserState.second.address)
     }
 
@@ -130,8 +130,6 @@ fun Profile(
         Firebase.auth.signOut()
         healthViewModel.resetUserUiState()
     }
-
-    val navBackStackEntry by navController!!.currentBackStackEntryAsState()
 
     Column(
         modifier = modifier
