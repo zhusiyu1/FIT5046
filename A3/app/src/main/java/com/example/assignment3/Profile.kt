@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.assignment3.HealthViewModel.HealthViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -54,6 +55,7 @@ import com.google.firebase.auth.auth
 fun Profile(
     modifier: Modifier = Modifier,
     navController: NavController?,
+    navControllerMainAcitivity: NavController,
     healthViewModel: HealthViewModel = hiltViewModel()
 ) {
     val profileUiState by healthViewModel.profileUiState.collectAsState()
@@ -123,6 +125,13 @@ fun Profile(
     val toggleEditing: () -> Unit = {
         edit = !edit
     }
+
+    val logout: () -> Unit = {
+        Firebase.auth.signOut()
+        healthViewModel.resetUserUiState()
+    }
+
+    val navBackStackEntry by navController!!.currentBackStackEntryAsState()
 
     Column(
         modifier = modifier
@@ -309,8 +318,9 @@ fun Profile(
         }
         Button(
             onClick = {
-                Firebase.auth.signOut()
-                navController!!.navigate("Welcome")
+                logout()
+                navControllerMainAcitivity!!.navigate("Welcome")
+//                navigate("Welcome")
             },
             modifier = Modifier,
             colors = ButtonDefaults.buttonColors(
@@ -321,6 +331,7 @@ fun Profile(
 
     }
 }
+
 
 @Composable
 fun Property1Active(

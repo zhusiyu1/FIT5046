@@ -138,5 +138,8 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
         }
     }
 
+    fun resetUserUiState() {
+        _userUiState.value = User()
+    }
 }
 

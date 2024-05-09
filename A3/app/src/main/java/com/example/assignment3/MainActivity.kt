@@ -93,9 +93,7 @@ class MainActivity() : ComponentActivity() {
                         composable("Navigation") { BottomNavigationBar(navController, healthViewModel) }
                         composable("Home") { Home(navController, healthViewModel) }
                         composable("Register") { RegisterPage(navController) }
-
                     }
-
                 }
             }
         }
