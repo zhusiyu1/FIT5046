@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -34,11 +35,15 @@ import com.example.assignment3.User
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 
@@ -50,6 +55,15 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
         viewModelScope.launch {
             getUserInfo()
         }
+        val auth = FirebaseAuth.getInstance()
+        val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            _authState.value = firebaseAuth.currentUser
+        }
+        auth.addAuthStateListener(authStateListener)
+
+        // Start listening for authentication state changes
+        FirebaseAuth.getInstance().addAuthStateListener(authStateListener)
+
     }
 
     // ****************************************
@@ -71,14 +85,28 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     var username: String = profileUiState.value.username
     var address: String = profileUiState.value.address
 
-    // DB
-    val bookings: LiveData<List<Booking>> = healthBookingRepository.userBookings.asLiveData()
-    val hospitals: LiveData<List<Hospital>> = healthBookingRepository.hospitals.asLiveData()
+    private val _authState = MutableStateFlow<FirebaseUser?>(null)
+    val authState: StateFlow<FirebaseUser?> = _authState
 
+    // DB
+    val bookings: LiveData<List<Booking>> = healthBookingRepository.bookings.asLiveData()
+    val hospitals: LiveData<List<Hospital>> = healthBookingRepository.hospitals.asLiveData()
 
     // ****************************************
     //             Business logic
     // ****************************************
+
+    suspend fun getUserAllBookings() {
+        viewModelScope.launch {
+            val user = Firebase.auth.currentUser
+            if (user != null) {
+                val bookings = healthBookingRepository.getUserBookings(user.uid)
+                return@launch bookings
+            } else {
+                return@launch
+            }
+        }
+    }
 
     // Update user profile
     fun updateUserProfile(updatedUser: User, updatedUsername: String, updatedAddress: String) {
@@ -141,5 +169,6 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     fun resetUserUiState() {
         _userUiState.value = User()
     }
+
 }
 

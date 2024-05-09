@@ -13,21 +13,14 @@ import javax.inject.Inject
 class HealthBookingRepository @Inject constructor(private val hospitalDao: HospitalDao, private val bookingDao: BookingDao) {
 
     // Get only user bookings
-    val userBookings: Flow<List<Booking>> get() {
-        val auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser
-        println("user exists")
-        return if (currentUser != null) {
-            println("user booking")
-            bookingDao.getById(currentUser.uid)
-        } else {
-            println("no user")
-            emptyFlow()
-        }
-    }
-
     val bookings: Flow<List<Booking>> = bookingDao.getAll()
     val hospitals: Flow<List<Hospital>> = hospitalDao.getAll()
+
+
+    @WorkerThread
+    suspend fun getUserBookings(user: String) {
+        bookingDao.getById(user)
+    }
 
     @WorkerThread
     suspend fun insertBooking(booking: Booking) {

@@ -34,6 +34,8 @@ import com.google.firebase.ktx.Firebase
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
@@ -82,22 +84,24 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltVi
                 if (bookings != null) {
                     LazyColumn {
                         items(bookings) { booking ->
-                            Column(
-                                modifier = Modifier
-                                    .padding(bottom = 4.dp)
-                                    .fillMaxWidth(0.9f)
-                            ) {
-                                Card(
-                                    modifier = Modifier.border(
-                                        1.dp,
-                                        Color.Gray,
-                                        shape = RoundedCornerShape(16.dp)
-                                    )
+                            if (booking.bookingUser == Firebase.auth.currentUser?.uid) {
+                                Column(
+                                    modifier = Modifier
+                                        .padding(bottom = 4.dp)
+                                        .fillMaxWidth(0.9f)
                                 ) {
-                                    Column(modifier = Modifier.padding(16.dp)) {
-                                        Text("Appointment ${formatter.format(Date(booking.bookingDate))} at ${booking.bookingTime}")
-                                        Text("Clinic: ${booking.bookingLocationName}")
-                                        Text("Location: ${booking.bookingLocationAddress}")
+                                    Card(
+                                        modifier = Modifier.border(
+                                            1.dp,
+                                            Color.Gray,
+                                            shape = RoundedCornerShape(16.dp)
+                                        )
+                                    ) {
+                                        Column(modifier = Modifier.padding(16.dp)) {
+                                            Text("Appointment ${formatter.format(Date(booking.bookingDate))} at ${booking.bookingTime}")
+                                            Text("Clinic: ${booking.bookingLocationName}")
+                                            Text("Location: ${booking.bookingLocationAddress}")
+                                        }
                                     }
                                 }
                             }
