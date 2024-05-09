@@ -64,38 +64,38 @@ fun Profile(
             userUiState to profileUiState
         }
     }
+    println(updatedUserState)
+    println("Email ${updatedUserState.first.email}")
 
 
     var edit by remember { mutableStateOf(false) }
 
-    var email by remember {
-        mutableStateOf(userUiState.email)
+    var email by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.first.email)
     }
-    var firstName by remember {
-        mutableStateOf(userUiState.firstName)
+    var firstName by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.first.firstName)
     }
-    var lastName by remember {
-        mutableStateOf(userUiState.lastName)
+    var lastName by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.first.lastName)
     }
-    var dob by remember {
-        mutableStateOf(userUiState.dateOfBirth)
+    var dob by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.first.dateOfBirth)
     }
-    var gender by remember {
-        mutableStateOf(userUiState.gender)
+    var gender by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.first.gender)
     }
-    var password by remember {
-        mutableStateOf(userUiState.password)
+    var password by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.first.password)
     }
-    var phone by remember {
-        mutableStateOf(userUiState.mobilePhone)
+    var phone by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.first.mobilePhone)
     }
-
-    var username by remember {
-        mutableStateOf(profileUiState.username)
+    var username by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.second.username)
     }
-
-    var address by remember {
-        mutableStateOf(profileUiState.address)
+    var address by remember(updatedUserState) {
+        mutableStateOf(updatedUserState.second.address)
     }
 
 

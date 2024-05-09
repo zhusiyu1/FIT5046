@@ -44,6 +44,7 @@ import java.util.Locale
 @Composable
 fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltViewModel()) {
 
+    healthViewModel.getUserInfo()
     val bookings = healthViewModel.bookings.observeAsState().value
 
     val formatter = SimpleDateFormat("dd MM yyyy", Locale.ROOT)
