@@ -88,8 +88,7 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltVi
                                 )
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("Appointment ${booking.uid}")
-                                    Text("Date: ${formatter.format(Date(booking.bookingDate))} at ${booking.bookingTime}")
+                                    Text("Appointment ${formatter.format(Date(booking.bookingDate))} at ${booking.bookingTime}")
                                     Text("Clinic: ${booking.bookingLocationName}")
                                     Text("Address: ${booking.bookingLocationAddress}")
                                 }
