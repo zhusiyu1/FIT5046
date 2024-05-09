@@ -78,7 +78,6 @@ class MainActivity() : ComponentActivity() {
         databaseScope.launch {
             healthBookingRepository.generate3Hospitals()
         }
-//        healthViewModel.getUserInfo()
 
         setContent {
             Assignment3Theme {

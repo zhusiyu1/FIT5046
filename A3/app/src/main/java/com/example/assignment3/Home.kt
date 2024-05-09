@@ -56,7 +56,6 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltVi
             Text(
                 text = "Home",
                 color = Color.Blue,
-                textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold
@@ -64,7 +63,8 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltVi
                 modifier = Modifier.padding(bottom = 32.dp)
             )
         }
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Text(
                 "Upcoming Appointments",
                 color = Color.Black,
@@ -73,39 +73,46 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltVi
                     fontWeight = FontWeight.Bold
                 ),
                 textAlign = TextAlign.Start,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 12.dp).fillMaxWidth(0.84f)
             )
-
-            // Display appointments
-            if (bookings != null) {
-                LazyColumn {
-                    items(bookings) { booking ->
-                        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(bottom = 4.dp)) {
-                            Card(
-                                modifier = Modifier.border(
-                                    1.dp,
-                                    Color.Gray,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
+        }
+        Column(modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                // Display appointments
+                if (bookings != null) {
+                    LazyColumn {
+                        items(bookings) { booking ->
+                            Column(
+                                modifier = Modifier
+                                    .padding(bottom = 4.dp)
+                                    .fillMaxWidth(0.9f)
                             ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("Appointment ${formatter.format(Date(booking.bookingDate))} at ${booking.bookingTime}")
-                                    Text("Clinic: ${booking.bookingLocationName}")
-                                    Text("Address: ${booking.bookingLocationAddress}")
+                                Card(
+                                    modifier = Modifier.border(
+                                        1.dp,
+                                        Color.Gray,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        Text("Appointment ${formatter.format(Date(booking.bookingDate))} at ${booking.bookingTime}")
+                                        Text("Clinic: ${booking.bookingLocationName}")
+                                        Text("Location: ${booking.bookingLocationAddress}")
+                                    }
                                 }
                             }
                         }
                     }
+                } else {
+                    Text(
+                        text = "No Appointment",
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                        ),
+                    )
                 }
-            } else {
-                Text(
-                    text = "No Appointment",
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                    ),
-                )
             }
         }
     }

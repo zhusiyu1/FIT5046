@@ -64,9 +64,6 @@ fun Profile(
             userUiState to profileUiState
         }
     }
-    println(updatedUserState)
-    println("Email ${updatedUserState.first.email}")
-
 
     var edit by remember { mutableStateOf(false) }
 
@@ -161,7 +158,7 @@ fun Profile(
 
         }
         // Email field
-        Column(modifier = Modifier.padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
             Text(
                 text = "Email",
                 color = Color.Black,

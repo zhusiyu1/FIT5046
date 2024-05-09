@@ -127,8 +127,7 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
                 database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
                     .addOnSuccessListener {
                         _userUiState.value = it.getValue(User::class.java)!!
-                        _userUiState.value = it.getValue(User::class.java)!!
-                        println("Added User Succesffully")
+//                        _userUiState.value = it.getValue(User::class.java)!!
                     }.addOnFailureListener() {
                         println("No user found")
                     }
@@ -137,9 +136,6 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
             }
 
         }
-        print("User firebase $user")
-        print(1)
-        print("state: ${_userUiState}")
     }
 
 }
