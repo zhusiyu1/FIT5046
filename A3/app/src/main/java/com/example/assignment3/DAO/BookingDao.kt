@@ -13,6 +13,11 @@ interface BookingDao {
     @Query("SELECT * FROM booking")
     fun getAll(): Flow<List<Booking>>
 
+
+    @WorkerThread
+    @Query("SELECT * FROM booking WHERE user = :user")
+    fun getById(user: String): Flow<List<Booking>>
+
     @WorkerThread
     @Insert
     suspend fun insertAll(vararg bookings: Booking)

@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.assignment3.HealthViewModel.HealthViewModel
@@ -52,10 +54,17 @@ import com.google.firebase.auth.auth
 fun Profile(
     modifier: Modifier = Modifier,
     navController: NavController?,
-    healthViewModel: HealthViewModel
+    healthViewModel: HealthViewModel = hiltViewModel()
 ) {
     val profileUiState by healthViewModel.profileUiState.collectAsState()
     val userUiState by healthViewModel.userUiState.collectAsState()
+
+    val updatedUserState by remember {
+        derivedStateOf {
+            userUiState to profileUiState
+        }
+    }
+
 
     var edit by remember { mutableStateOf(false) }
 
@@ -303,8 +312,8 @@ fun Profile(
         }
         Button(
             onClick = {
-                navController!!.navigate("Welcome")
                 Firebase.auth.signOut()
+                navController!!.navigate("Welcome")
             },
             modifier = Modifier,
             colors = ButtonDefaults.buttonColors(

@@ -28,6 +28,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.assignment3.MainActivity
 import com.example.assignment3.User
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
@@ -40,11 +42,11 @@ import javax.inject.Inject
 class HealthViewModel @Inject constructor(private val healthBookingRepository: HealthBookingRepository) :
     ViewModel() {
 
-//    init {
-//        viewModelScope.launch {
-//            healthBookingRepository.generate3Hospitals()
-//        }
-//    }
+    init {
+        viewModelScope.launch {
+            getUserInfo()
+        }
+    }
 
     // ****************************************
     //              UI State
@@ -66,7 +68,7 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     var address: String = profileUiState.value.address
 
     // DB
-    val bookings: LiveData<List<Booking>> = healthBookingRepository.bookings.asLiveData()
+    val bookings: LiveData<List<Booking>> = healthBookingRepository.userBookings.asLiveData()
     val hospitals: LiveData<List<Hospital>> = healthBookingRepository.hospitals.asLiveData()
 
 
@@ -115,18 +117,25 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     fun getUserInfo() {
         val user = Firebase.auth.currentUser
 
-        val database = FirebaseDatabase.getInstance()
-        try {
-            database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
-                .addOnSuccessListener {
-                    _userUiState.value = it.getValue(User::class.java)!!
-                }.addOnFailureListener() {
-                    println("No user found")
-                }
+        viewModelScope.launch {
+            val database = FirebaseDatabase.getInstance()
+            try {
+                database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
+                    .addOnSuccessListener {
+                        _userUiState.value = it.getValue(User::class.java)!!
+                        _userUiState.value = it.getValue(User::class.java)!!
+                        println("Added User Succesffully")
+                    }.addOnFailureListener() {
+                        println("No user found")
+                    }
+            } catch (e: Exception) {
+                println("No user found")
+            }
+
         }
-        catch (e: Exception) {
-            println("No user found")
-        }
+        print("User firebase $user")
+        print(1)
+        print("state: ${_userUiState}")
     }
 
 }

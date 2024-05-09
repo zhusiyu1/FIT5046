@@ -34,6 +34,7 @@ import com.google.firebase.ktx.Firebase
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.hilt.navigation.compose.hiltViewModel
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -41,7 +42,7 @@ import java.util.Locale
 
 
 @Composable
-fun Home(navController: NavController, healthViewModel: HealthViewModel) {
+fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltViewModel()) {
 
     val bookings = healthViewModel.bookings.observeAsState().value
 
@@ -63,8 +64,6 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel) {
             )
         }
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-
-
             Text(
                 "Upcoming Appointments",
                 color = Color.Black,

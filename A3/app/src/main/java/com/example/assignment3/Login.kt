@@ -27,14 +27,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.assignment3.HealthViewModel.HealthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.Scopes
 import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
-fun Login(navController: NavController) {
+fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltViewModel()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isEmailValid by remember { mutableStateOf(false) }
@@ -116,6 +118,7 @@ fun Login(navController: NavController) {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            healthViewModel.getUserInfo()
                             navController.navigate("Navigation")
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.exception)

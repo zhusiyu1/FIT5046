@@ -123,6 +123,8 @@ fun Appointment(
             bookingLocationAddress = selectedHospital!!.address,
             bookingUser = auth.currentUser!!.uid,
         ))
+
+        navController?.navigate("Home")
     }
 
     Column(
@@ -300,8 +302,6 @@ fun DatePickerComponent(onDateSelected: (Long) -> Unit) {
                 DatePicker(state = datePickerState)
             }
         }
-
-
     }
 
     OutlinedTextField(

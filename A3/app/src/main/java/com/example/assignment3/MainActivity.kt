@@ -1,5 +1,6 @@
 package com.example.assignment3
 
+import android.app.PendingIntent.getActivity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -76,8 +78,7 @@ class MainActivity() : ComponentActivity() {
         databaseScope.launch {
             healthBookingRepository.generate3Hospitals()
         }
-        healthViewModel.getUserInfo()
-
+//        healthViewModel.getUserInfo()
 
         setContent {
             Assignment3Theme {
@@ -115,7 +116,8 @@ enum class Routes(val value: String) {
     Home("Home"),
     Map("Map"),
     Profile("Profile"),
-    Appointment("Appointment")
+    Appointment("Appointment"),
+    Welcome("Welcome"),
 //    Appointment("Booking"),
 }
 

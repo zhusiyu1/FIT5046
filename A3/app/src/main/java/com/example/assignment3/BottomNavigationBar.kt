@@ -61,13 +61,16 @@ fun BottomNavigationBar(navController: NavController, healthViewModel: HealthVie
             startDestination = Routes.Home.value,
             Modifier.padding(paddingValues)
         ) {
+            composable(Routes.Welcome.value) {
+                Welcome(navController)
+            }
             composable(Routes.Home.value) {
                 if (healthViewModel != null) {
                     Home(navController, healthViewModel)
                 }
             }
             composable(Routes.Profile.value) {
-                Profile(Modifier, navController, healthViewModel!!)
+                Profile(Modifier, navController)
             }
 //            composable(Routes.Map.value) {
 //                Map(navController)
