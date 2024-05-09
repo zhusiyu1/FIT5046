@@ -152,7 +152,7 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
                     mobilePhone = ""
                 )
 
-                storeUserInDatabaseNew(user)
+                storeUserInDatabase(user)
 
                 navController.navigate("Navigation")
             },
@@ -198,11 +198,4 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
 
     }
 
-}
-
-fun storeUserInDatabaseNew(user: User) {
-    val database = FirebaseDatabase.getInstance()
-    val usersRef = database.reference.child("users")
-    val emailKey = user.email.replace(".", "_")
-    usersRef.child(emailKey).setValue(user)
 }
