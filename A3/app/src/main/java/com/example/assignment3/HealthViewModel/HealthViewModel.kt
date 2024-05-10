@@ -36,6 +36,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
@@ -151,9 +152,14 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
 
         if (user != null) {
 
-            val isGoogleSignIn = user.providerData.any { it.providerId == "google.com" }
+            var isSignInWithGoogle = false
 
-            if (!isGoogleSignIn) {
+            for (profile in user.providerData) {
+                if (profile.providerId == GoogleAuthProvider.PROVIDER_ID)
+                    isSignInWithGoogle = true
+            }
+
+            if (isSignInWithGoogle) {
                 viewModelScope.launch {
 
                     val database = FirebaseDatabase.getInstance()
@@ -161,7 +167,7 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
                         database.reference.child("users").child(user!!.email!!.replace(".", "_"))
                             .get()
                             .addOnSuccessListener {
-                                _userUiState.value = it.getValue(User::class.java)!!
+//                                _userUiState.value = it.getValue(User::class.java)!!
 //                        _userUiState.value = it.getValue(User::class.java)!!
                             }.addOnFailureListener() {
                                 println("No user found")
@@ -171,7 +177,7 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
                     }
                 }
             } else {
-                println("isGoogleSignIn: $isGoogleSignIn, ${user.email}")
+                println("isGoogleSignIn: $isSignInWithGoogle, ${user.email}")
             }
         }
     }

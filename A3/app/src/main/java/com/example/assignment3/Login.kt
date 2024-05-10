@@ -142,17 +142,17 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
                 val googleSignInClient = GoogleSignIn.getClient(context, gso)
                 launcher.launch(googleSignInClient.signInIntent)
 
-                val user = User(
-                    email = "",
-                    firstName = "",
-                    lastName = "",
-                    dateOfBirth = "",
-                    gender = "",
-                    password = "",
-                    mobilePhone = ""
-                )
-
-                storeUserInDatabase(user)
+//                val user = User(
+//                    email = "",
+//                    firstName = "",
+//                    lastName = "",
+//                    dateOfBirth = "",
+//                    gender = "",
+//                    password = "",
+//                    mobilePhone = ""
+//                )
+//
+//                storeUserInDatabase(user)
 
                 navController.navigate("Navigation")
             },

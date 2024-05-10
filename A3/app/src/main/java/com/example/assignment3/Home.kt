@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignment3.Entity.Booking
+import com.google.firebase.auth.FirebaseAuth
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -52,11 +53,15 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltVi
 
     val bookings = healthViewModel.bookings.observeAsState().value
 
-    val updatedBookings by remember {
+    val updatedBookings by remember(bookings) {
         derivedStateOf {
-            bookings
+            bookings ?: emptyList() // Provide a default empty list if bookingsState.value is null
         }
     }
+
+    println(updatedBookings)
+
+
 
     val formatter = SimpleDateFormat("dd MM yyyy", Locale.ROOT)
 
@@ -92,7 +97,7 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltVi
                 // Display appointments
                 if (bookings != null) {
                     LazyColumn {
-                        items(bookings) { booking ->
+                        items(items = updatedBookings) { booking ->
                             if (booking.bookingUser == Firebase.auth.currentUser?.uid) {
                                 Column(
                                     modifier = Modifier
