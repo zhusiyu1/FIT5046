@@ -75,9 +75,9 @@ fun BottomNavigationBar(navControllerMainAcitivity: NavController, healthViewMod
             composable(Routes.Profile.value) {
                 Profile(Modifier, navController, navControllerMainAcitivity)
             }
-//            composable(Routes.Map.value) {
-//                Map(navController)
-//            }
+            composable(Routes.Map.value) {
+               MapGuide(navController)
+            }
             composable(Routes.Appointment.value) {
                 Appointment(Modifier, navController, healthViewModel!!)
             }

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Assignment3</string>
     <string name="client_id">67423822640-jfa8qo5ttbd5un1b8vf45u3inkn380mo.apps.googleusercontent.com</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoibGlhbmczMTIiLCJhIjoiY2x2dXNucXczMW9wZzJxbzVpNjNmaXczZyJ9.WtR4TP_ApnVVGZB8gC8qHA</string>
     <string name="web_client_id">67423822640-jfa8qo5ttbd5un1b8vf45u3inkn380mo.apps.googleusercontent.com</string>
 </resources>

@@ -61,7 +61,7 @@ dependencies {
     implementation("androidx.compose.material:material:1.6.3")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("com.google.firebase:firebase-auth-ktx")
-    
+
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
 
@@ -103,6 +103,24 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
     implementation("androidx.compose.runtime:runtime-rxjava2:1.6.7")
     implementation("androidx.compose.runtime:runtime-rxjava3:1.6.7")
+    //map
+    implementation("com.mapbox.maps:android:11.0.0")
+    implementation("com.mapbox.navigationcore:navigation:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:copilot:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:ui-maps:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:voice:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:tripdata:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:android:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:ui-components:3.1.0-beta.1")
+    implementation("com.mapbox.mapboxsdk:mapbox-sdk-services:6.15.0")
+    // Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.7.2")
+    implementation ("com.squareup.retrofit2:converter-gson:2.7.2")
+    // OkHttp
+    implementation ("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation ("androidx.compose.runtime:runtime-livedata")
+
 
 
     // Import the BoM for the Firebase platform

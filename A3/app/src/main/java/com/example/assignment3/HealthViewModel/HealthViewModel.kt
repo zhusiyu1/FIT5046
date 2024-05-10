@@ -36,7 +36,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
@@ -150,43 +149,26 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     fun getUserInfo() {
         val user = Firebase.auth.currentUser
 
-        if (user != null) {
-
-            var isSignInWithGoogle = false
-
-            for (profile in user.providerData) {
-                if (profile.providerId == GoogleAuthProvider.PROVIDER_ID)
-                    isSignInWithGoogle = true
-            }
-
-            if (isSignInWithGoogle) {
-                viewModelScope.launch {
-
-                    val database = FirebaseDatabase.getInstance()
-                    try {
-                        database.reference.child("users").child(user!!.email!!.replace(".", "_"))
-                            .get()
-                            .addOnSuccessListener {
-//                                _userUiState.value = it.getValue(User::class.java)!!
+        viewModelScope.launch {
+            val database = FirebaseDatabase.getInstance()
+            try {
+                database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
+                    .addOnSuccessListener {
+                        _userUiState.value = it.getValue(User::class.java)!!
 //                        _userUiState.value = it.getValue(User::class.java)!!
-                            }.addOnFailureListener() {
-                                println("No user found")
-                            }
-                    } catch (e: Exception) {
+                    }.addOnFailureListener() {
                         println("No user found")
                     }
-                }
-            } else {
-                println("isGoogleSignIn: $isSignInWithGoogle, ${user.email}")
+            } catch (e: Exception) {
+                println("No user found")
             }
+
         }
     }
 
     fun resetUserUiState() {
         _userUiState.value = User()
     }
-    
-    // Sign in
 
 }
 
