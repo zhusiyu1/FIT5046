@@ -97,11 +97,41 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
     implementation("androidx.compose.runtime:runtime-rxjava2:1.6.7")
     implementation("androidx.compose.runtime:runtime-rxjava3:1.6.7")
+    //map
+    implementation("com.mapbox.maps:android:11.0.0")
+    implementation("com.mapbox.navigationcore:navigation:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:copilot:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:ui-maps:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:voice:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:tripdata:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:android:3.1.0-beta.1")
+    implementation("com.mapbox.navigationcore:ui-components:3.1.0-beta.1")
+    implementation("com.mapbox.mapboxsdk:mapbox-sdk-services:6.15.0")
+    // Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.7.2")
+    implementation ("com.squareup.retrofit2:converter-gson:2.7.2")
+    // OkHttp
+    implementation ("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation ("androidx.compose.runtime:runtime-livedata")
 
+
+
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-auth")
+
+    // Also add the dependency for the Google Play services library and specify its version
+    implementation("com.google.android.gms:play-services-auth:21.1.1")
 
 //    kapt("androidx.room:room-compiler:$room_version")
 }

@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Build
 import android.text.format.DateFormat
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -90,15 +91,21 @@ fun Appointment(
     healthViewModel: HealthViewModel
 ) {
 
+
+    val context: Context = LocalContext.current
     val auth = FirebaseAuth.getInstance()
     val hospitals = healthViewModel.hospitals.observeAsState().value
 
     val bookingUiState = healthViewModel.bookingUiState.collectAsState().value
 
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
-    var selectedTime by remember { mutableStateOf("") }
+    // Now (Time and Date)
+    val timeNow = LocalTime.now()
+    val dateNow = Instant.now().toEpochMilli()
+
+    var selectedDate by remember { mutableStateOf<Long>(dateNow) }
+    var selectedTime by remember { mutableStateOf(timeNow.toString()) }
     var selectedHospital by remember {
-        mutableStateOf<Hospital?>(null)
+        mutableStateOf<Hospital?>(hospitals?.get(0))
     }
 
     var edit by remember { mutableStateOf(true) }
@@ -115,15 +122,31 @@ fun Appointment(
     }
 
     val book: () -> Unit = {
-        healthViewModel.scheduleBooking(Booking(
-            bookingDate = selectedDate!!,
-            bookingTime = selectedTime,
-            bookingLocationId = selectedHospital!!.uid,
-            bookingLocationName = selectedHospital!!.name,
-            bookingLocationAddress = selectedHospital!!.address,
-            bookingUser = auth.currentUser!!.uid,
-        ))
+
+        if (selectedDate!! < dateNow && selectedTime < timeNow.toString()) {
+            Toast.makeText(context, "Please select a future date and time", Toast.LENGTH_SHORT).show()
+        } else {
+            if (selectedHospital != null) {
+                healthViewModel.scheduleBooking(
+                    Booking(
+                        bookingDate = selectedDate!!,
+                        bookingTime = selectedTime,
+                        bookingLocationId = selectedHospital!!.uid,
+                        bookingLocationName = selectedHospital!!.name,
+                        bookingLocationAddress = selectedHospital!!.address,
+                        bookingUser = auth.currentUser!!.uid,
+                    )
+                )
+
+                navController?.navigate("Home")
+            } else {
+                Toast.makeText(context, "Please select a hospital", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
+    // Validations
+
 
     Column(
         modifier = modifier
@@ -144,7 +167,9 @@ fun Appointment(
             ),
             modifier = Modifier.padding(bottom = 32.dp)
         )
-        Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Column() {
                 Text(
                     text = "Date",
@@ -166,7 +191,9 @@ fun Appointment(
                 }
             }
         }
-        Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "Time",
                 color = Color.Black,
@@ -300,15 +327,15 @@ fun DatePickerComponent(onDateSelected: (Long) -> Unit) {
                 DatePicker(state = datePickerState)
             }
         }
-
-
     }
 
     OutlinedTextField(
         value = formattedDate,
         onValueChange = {},
         readOnly = true,
-        modifier = Modifier.clickable { showDatePicker = true }.fillMaxWidth(0.8f),
+        modifier = Modifier
+            .clickable { showDatePicker = true }
+            .fillMaxWidth(0.8f),
         enabled = false,
         label = { "Select Date" },
 
@@ -356,7 +383,9 @@ fun TimePickerComponent(onTimeSelected: (String) -> Unit) {
             value = "${selectedHour}: ${selectedMinute}",
             onValueChange = {},
             readOnly = true,
-            modifier = Modifier.clickable { showTimePicker = true }.fillMaxWidth(0.8f),
+            modifier = Modifier
+                .clickable { showTimePicker = true }
+                .fillMaxWidth(0.8f),
             label = { Text("Select Time") },
             enabled = false
         )

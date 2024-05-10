@@ -2,7 +2,12 @@ package com.example.assignment3.HealthViewModel
 
 import androidx.annotation.WorkerThread
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -28,11 +33,17 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.assignment3.MainActivity
 import com.example.assignment3.User
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 
@@ -40,11 +51,20 @@ import javax.inject.Inject
 class HealthViewModel @Inject constructor(private val healthBookingRepository: HealthBookingRepository) :
     ViewModel() {
 
-//    init {
-//        viewModelScope.launch {
-//            healthBookingRepository.generate3Hospitals()
-//        }
-//    }
+    init {
+        viewModelScope.launch {
+            getUserInfo()
+        }
+        val auth = FirebaseAuth.getInstance()
+        val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            _authState.value = firebaseAuth.currentUser
+        }
+        auth.addAuthStateListener(authStateListener)
+
+        // Start listening for authentication state changes
+        FirebaseAuth.getInstance().addAuthStateListener(authStateListener)
+
+    }
 
     // ****************************************
     //              UI State
@@ -65,14 +85,28 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     var username: String = profileUiState.value.username
     var address: String = profileUiState.value.address
 
+    private val _authState = MutableStateFlow<FirebaseUser?>(null)
+    val authState: StateFlow<FirebaseUser?> = _authState
+
     // DB
     val bookings: LiveData<List<Booking>> = healthBookingRepository.bookings.asLiveData()
     val hospitals: LiveData<List<Hospital>> = healthBookingRepository.hospitals.asLiveData()
 
-
     // ****************************************
     //             Business logic
     // ****************************************
+
+    suspend fun getUserAllBookings() {
+        viewModelScope.launch {
+            val user = Firebase.auth.currentUser
+            if (user != null) {
+                val bookings = healthBookingRepository.getUserBookings(user.uid)
+                return@launch bookings
+            } else {
+                return@launch
+            }
+        }
+    }
 
     // Update user profile
     fun updateUserProfile(updatedUser: User, updatedUsername: String, updatedAddress: String) {
@@ -115,18 +149,25 @@ class HealthViewModel @Inject constructor(private val healthBookingRepository: H
     fun getUserInfo() {
         val user = Firebase.auth.currentUser
 
-        val database = FirebaseDatabase.getInstance()
-        try {
-            database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
-                .addOnSuccessListener {
-                    _userUiState.value = it.getValue(User::class.java)!!
-                }.addOnFailureListener() {
-                    println("No user found")
-                }
+        viewModelScope.launch {
+            val database = FirebaseDatabase.getInstance()
+            try {
+                database.reference.child("users").child(user!!.email!!.replace(".", "_")).get()
+                    .addOnSuccessListener {
+                        _userUiState.value = it.getValue(User::class.java)!!
+//                        _userUiState.value = it.getValue(User::class.java)!!
+                    }.addOnFailureListener() {
+                        println("No user found")
+                    }
+            } catch (e: Exception) {
+                println("No user found")
+            }
+
         }
-        catch (e: Exception) {
-            println("No user found")
-        }
+    }
+
+    fun resetUserUiState() {
+        _userUiState.value = User()
     }
 
 }

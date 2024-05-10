@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,8 +43,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.assignment3.HealthViewModel.HealthViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -52,41 +55,46 @@ import com.google.firebase.auth.auth
 fun Profile(
     modifier: Modifier = Modifier,
     navController: NavController?,
-    healthViewModel: HealthViewModel
+    navControllerMainAcitivity: NavController,
+    healthViewModel: HealthViewModel = hiltViewModel()
 ) {
     val profileUiState by healthViewModel.profileUiState.collectAsState()
     val userUiState by healthViewModel.userUiState.collectAsState()
 
+    val updatedUserState by remember {
+        derivedStateOf {
+            userUiState to profileUiState
+        }
+    }
+
     var edit by remember { mutableStateOf(false) }
 
-    var email by remember {
-        mutableStateOf(userUiState.email)
+    var email by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.first.email)
     }
-    var firstName by remember {
-        mutableStateOf(userUiState.firstName)
+    var firstName by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.first.firstName)
     }
-    var lastName by remember {
-        mutableStateOf(userUiState.lastName)
+    var lastName by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.first.lastName)
     }
-    var dob by remember {
-        mutableStateOf(userUiState.dateOfBirth)
+    var dob by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.first.dateOfBirth)
     }
-    var gender by remember {
-        mutableStateOf(userUiState.gender)
+    var gender by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.first.gender)
     }
-    var password by remember {
-        mutableStateOf(userUiState.password)
+    var password by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.first.password)
     }
-    var phone by remember {
-        mutableStateOf(userUiState.mobilePhone)
+    var phone by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.first.mobilePhone)
     }
-
-    var username by remember {
-        mutableStateOf(profileUiState.username)
+    var username by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.second.username)
     }
-
-    var address by remember {
-        mutableStateOf(profileUiState.address)
+    var address by remember(updatedUserState,navControllerMainAcitivity) {
+        mutableStateOf(updatedUserState.second.address)
     }
 
 
@@ -116,6 +124,11 @@ fun Profile(
 
     val toggleEditing: () -> Unit = {
         edit = !edit
+    }
+
+    val logout: () -> Unit = {
+        Firebase.auth.signOut()
+        healthViewModel.resetUserUiState()
     }
 
     Column(
@@ -152,7 +165,7 @@ fun Profile(
 
         }
         // Email field
-        Column(modifier = Modifier.padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
             Text(
                 text = "Email",
                 color = Color.Black,
@@ -303,8 +316,9 @@ fun Profile(
         }
         Button(
             onClick = {
-                navController!!.navigate("Welcome")
-                Firebase.auth.signOut()
+                logout()
+                navControllerMainAcitivity!!.navigate("Welcome")
+//                navigate("Welcome")
             },
             modifier = Modifier,
             colors = ButtonDefaults.buttonColors(
@@ -315,6 +329,7 @@ fun Profile(
 
     }
 }
+
 
 @Composable
 fun Property1Active(

@@ -2,6 +2,8 @@ package com.example.assignment3
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -27,19 +30,54 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.assignment3.HealthViewModel.HealthViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.Scopes
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
 
 
 @Composable
-fun Login(navController: NavController) {
+fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltViewModel()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isEmailValid by remember { mutableStateOf(false) }
     var isPassValid by remember { mutableStateOf(false) }
-    val token = stringResource(R.string.client_id)
+    var errorMessage by remember { mutableStateOf("") }
+
+    // Google Signin
+    // https://stackoverflow.com/questions/72563673/google-authentication-with-firebase-and-jetpack-compose
+    val context = LocalContext.current
+    val token = stringResource(R.string.web_client_id)
+    val launcherNav = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) {
+        navController.navigate("Navigation")
+    }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+    ) {
+        val task =
+            try {
+                val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+                    .getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
+                FirebaseAuth.getInstance().signInWithCredential(credential)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+
+                        }
+                    }
+            }
+            catch (e: ApiException) {
+                Log.w("TAG", "GoogleSign in Failed", e)
+            }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -80,7 +118,7 @@ fun Login(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 350.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             isError = !isPassValid
         )
 
@@ -97,10 +135,27 @@ fun Login(navController: NavController) {
 
         Button(
             onClick = {
-               val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                val gso = GoogleSignInOptions
+                    .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(token)
                     .requestEmail()
                     .build()
+                val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                launcher.launch(googleSignInClient.signInIntent)
+
+//                val user = User(
+//                    email = "",
+//                    firstName = "",
+//                    lastName = "",
+//                    dateOfBirth = "",
+//                    gender = "",
+//                    password = "",
+//                    mobilePhone = ""
+//                )
+//
+//                storeUserInDatabase(user)
+
+                navController.navigate("Navigation")
             },
             modifier = Modifier
                 .padding(end = 16.dp, bottom = 300.dp)
@@ -118,6 +173,7 @@ fun Login(navController: NavController) {
                         if (task.isSuccessful) {
                             navController.navigate("Navigation")
                         } else {
+                            errorMessage = "The email or password is incorrect"
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
                         }
                     }
@@ -128,8 +184,17 @@ fun Login(navController: NavController) {
                 .width(200.dp),
         ) {
             Text("Login")
+
         }
 
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 32.dp)
+                    .align(Alignment.TopCenter)
+            )
+        }
 
 
         Button(
@@ -143,5 +208,6 @@ fun Login(navController: NavController) {
         }
 
     }
+
 
 }

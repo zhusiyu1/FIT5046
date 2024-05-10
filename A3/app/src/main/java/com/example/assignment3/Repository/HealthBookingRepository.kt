@@ -5,13 +5,22 @@ import com.example.assignment3.DAO.BookingDao
 import com.example.assignment3.DAO.HospitalDao
 import com.example.assignment3.Entity.Booking
 import com.example.assignment3.Entity.Hospital
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 class HealthBookingRepository @Inject constructor(private val hospitalDao: HospitalDao, private val bookingDao: BookingDao) {
 
-    val bookings: Flow<List<Booking>>  = bookingDao.getAll()
+    // Get only user bookings
+    val bookings: Flow<List<Booking>> = bookingDao.getAll()
     val hospitals: Flow<List<Hospital>> = hospitalDao.getAll()
+
+
+    @WorkerThread
+    suspend fun getUserBookings(user: String) {
+        bookingDao.getById(user)
+    }
 
     @WorkerThread
     suspend fun insertBooking(booking: Booking) {

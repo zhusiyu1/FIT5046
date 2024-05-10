@@ -25,7 +25,7 @@ import com.example.assignment3.HealthViewModel.HealthViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun BottomNavigationBar(navController: NavController, healthViewModel: HealthViewModel?) {
+fun BottomNavigationBar(navControllerMainAcitivity: NavController, healthViewModel: HealthViewModel?) {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
@@ -61,17 +61,23 @@ fun BottomNavigationBar(navController: NavController, healthViewModel: HealthVie
             startDestination = Routes.Home.value,
             Modifier.padding(paddingValues)
         ) {
+            composable(Routes.Welcome.value) {
+                Welcome(navController)
+            }
+            composable(Routes.Welcome.value) {
+                Login(navController)
+            }
             composable(Routes.Home.value) {
                 if (healthViewModel != null) {
                     Home(navController, healthViewModel)
                 }
             }
             composable(Routes.Profile.value) {
-                Profile(Modifier, navController, healthViewModel!!)
+                Profile(Modifier, navController, navControllerMainAcitivity)
             }
-//            composable(Routes.Map.value) {
-//                Map(navController)
-//            }
+            composable(Routes.Map.value) {
+               MapGuide(navController)
+            }
             composable(Routes.Appointment.value) {
                 Appointment(Modifier, navController, healthViewModel!!)
             }

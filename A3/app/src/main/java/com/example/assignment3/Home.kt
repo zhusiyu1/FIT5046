@@ -34,6 +34,14 @@ import com.google.firebase.ktx.Firebase
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.assignment3.Entity.Booking
+import com.google.firebase.auth.FirebaseAuth
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -41,9 +49,19 @@ import java.util.Locale
 
 
 @Composable
-fun Home(navController: NavController, healthViewModel: HealthViewModel) {
+fun Home(navController: NavController, healthViewModel: HealthViewModel = hiltViewModel()) {
 
     val bookings = healthViewModel.bookings.observeAsState().value
+
+    val updatedBookings by remember(bookings) {
+        derivedStateOf {
+            bookings ?: emptyList() // Provide a default empty list if bookingsState.value is null
+        }
+    }
+
+    println(updatedBookings)
+
+
 
     val formatter = SimpleDateFormat("dd MM yyyy", Locale.ROOT)
 
@@ -54,7 +72,6 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel) {
             Text(
                 text = "Home",
                 color = Color.Blue,
-                textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold
@@ -62,9 +79,8 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel) {
                 modifier = Modifier.padding(bottom = 32.dp)
             )
         }
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 
-
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Text(
                 "Upcoming Appointments",
                 color = Color.Black,
@@ -73,40 +89,48 @@ fun Home(navController: NavController, healthViewModel: HealthViewModel) {
                     fontWeight = FontWeight.Bold
                 ),
                 textAlign = TextAlign.Start,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 12.dp).fillMaxWidth(0.84f)
             )
-
-            // Display appointments
-            if (bookings != null) {
-                LazyColumn {
-                    items(bookings) { booking ->
-                        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(bottom = 4.dp)) {
-                            Card(
-                                modifier = Modifier.border(
-                                    1.dp,
-                                    Color.Gray,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("Appointment ${booking.uid}")
-                                    Text("Date: ${formatter.format(Date(booking.bookingDate))} at ${booking.bookingTime}")
-                                    Text("Clinic: ${booking.bookingLocationName}")
-                                    Text("Address: ${booking.bookingLocationAddress}")
+        }
+        Column(modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                // Display appointments
+                if (bookings != null) {
+                    LazyColumn {
+                        items(items = updatedBookings) { booking ->
+                            if (booking.bookingUser == Firebase.auth.currentUser?.uid) {
+                                Column(
+                                    modifier = Modifier
+                                        .padding(bottom = 4.dp)
+                                        .fillMaxWidth(0.9f)
+                                ) {
+                                    Card(
+                                        modifier = Modifier.border(
+                                            1.dp,
+                                            Color.Gray,
+                                            shape = RoundedCornerShape(16.dp)
+                                        )
+                                    ) {
+                                        Column(modifier = Modifier.padding(16.dp)) {
+                                            Text("Appointment ${formatter.format(Date(booking.bookingDate))} at ${booking.bookingTime}")
+                                            Text("Clinic: ${booking.bookingLocationName}")
+                                            Text("Location: ${booking.bookingLocationAddress}")
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+                } else {
+                    Text(
+                        text = "No Appointment",
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                        ),
+                    )
                 }
-            } else {
-                Text(
-                    text = "No Appointment",
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                    ),
-                )
             }
         }
     }
