@@ -122,7 +122,13 @@ fun Appointment(
     }
 
     val book: () -> Unit = {
-
+        if (auth.currentUser != null) {
+            print("Please book an appointment")
+            print("Auth user ${auth.currentUser!!.uid}")
+            print("User ${auth.currentUser!!}")
+        } else {
+            print("Please login")
+        }
         if (selectedDate!! < dateNow && selectedTime < timeNow.toString()) {
             Toast.makeText(context, "Please select a future date and time", Toast.LENGTH_SHORT).show()
         } else {
@@ -137,6 +143,8 @@ fun Appointment(
                         bookingUser = auth.currentUser!!.uid,
                     )
                 )
+                print("Auth user ${FirebaseAuth.getInstance().currentUser!!.uid}")
+                print("User ${FirebaseAuth.getInstance().currentUser!!}")
 
                 navController?.navigate("Home")
             } else {
