@@ -3,9 +3,7 @@ package com.example.assignment3
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Build
-import android.text.format.DateFormat
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -18,29 +16,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TimePickerLayoutType
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,26 +48,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.assignment3.DAO.BookingDao
-import com.example.assignment3.DAO.HospitalDao
-import com.example.assignment3.Database.HealthBookerRoomDatabase
 import com.example.assignment3.Entity.Booking
 import com.example.assignment3.Entity.Hospital
 import com.example.assignment3.HealthViewModel.HealthViewModel
-import com.example.assignment3.Repository.HealthBookingRepository
 import com.google.firebase.auth.FirebaseAuth
-import java.sql.Time
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -120,6 +101,22 @@ fun Appointment(
         healthViewModel.selectHospital(hospital)
         expanded = false
     }
+
+    // https://stackoverflow.com/questions/73859164/how-do-i-make-a-disabled-compose-outlinedtextfield-look-like-its-enabled
+    // How do I make a disabled compose OutlinedTextField look like its enabled? (n.d.). Stack Overflow. Retrieved May 10, 2024, from https://stackoverflow.com/questions/73859164/how-do-i-make-a-disabled-compose-outlinedtextfield-look-like-its-enabled
+
+    val enabledColors = OutlinedTextFieldDefaults.colors(
+        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+        disabledContainerColor = Color.Transparent,
+        disabledBorderColor = MaterialTheme.colorScheme.outline,
+        disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledPrefixColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledSuffixColor = MaterialTheme.colorScheme.onSurfaceVariant
+    )
 
     val book: () -> Unit = {
         if (auth.currentUser != null) {
@@ -194,9 +191,9 @@ fun Appointment(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                DatePickerComponent { date ->
+                DatePickerComponent( { date ->
                     selectedDate = date
-                }
+                }, enabledColors)
             }
         }
         Column(modifier = Modifier
@@ -217,9 +214,9 @@ fun Appointment(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                TimePickerComponent { time ->
+                TimePickerComponent({ time ->
                     selectedTime = time
-                }
+                }, enabledColors)
             }
         }
 
@@ -234,9 +231,9 @@ fun Appointment(
             )
             Box(modifier = Modifier.clickable { expanded = true }) {
                 if (selectedHospital != null) {
-                    Property1Default1(Modifier, selectedHospital!!.name)
+                    Property1Default1(Modifier, selectedHospital!!.name, enabledColors = enabledColors)
                 } else {
-                    Property1Default1(Modifier, "Monash Campus Medical Center (Clayton)")
+                    Property1Default1(Modifier, "Monash Campus Medical Center (Clayton)", enabledColors = enabledColors)
                 }
 
             }
@@ -261,28 +258,22 @@ fun Appointment(
 }
 
 @Composable
-fun Property1Default1(modifier: Modifier = Modifier, selectedHospitalName: String) {
+fun Property1Default1(
+    modifier: Modifier = Modifier,
+    selectedHospitalName: String,
+    enabledColors: TextFieldColors
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .background(color = Color(0xfff7f8f9))
-            .border(
-                border = BorderStroke(1.dp, Color(0xffe8ecf4)),
-                shape = RoundedCornerShape(10.dp)
-            )
             .fillMaxWidth(0.8f)
-            .padding(all = 20.dp)
     ) {
-        Text(
-            text = selectedHospitalName,
-            color = Color(0xff1e232c).copy(alpha = 0.56f),
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
+        OutlinedTextField(
+            value = selectedHospitalName,
+            onValueChange = { Unit },
+            colors = enabledColors,
+            enabled = false,
         )
     }
 }
@@ -290,7 +281,7 @@ fun Property1Default1(modifier: Modifier = Modifier, selectedHospitalName: Strin
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerComponent(onDateSelected: (Long) -> Unit) {
+fun DatePickerComponent(onDateSelected: (Long) -> Unit, enabledColors: TextFieldColors) {
     val calendar = Calendar.getInstance()
     calendar.set(2024, 0, 1) // month (0) is January
     calendar.set(LocalDate.now().year, LocalDate.now().monthValue - 1, LocalDate.now().dayOfMonth)
@@ -346,6 +337,7 @@ fun DatePickerComponent(onDateSelected: (Long) -> Unit) {
             .fillMaxWidth(0.8f),
         enabled = false,
         label = { "Select Date" },
+        colors = enabledColors
 
     )
 }
@@ -353,7 +345,7 @@ fun DatePickerComponent(onDateSelected: (Long) -> Unit) {
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterial3Api
 @Composable
-fun TimePickerComponent(onTimeSelected: (String) -> Unit) {
+fun TimePickerComponent(onTimeSelected: (String) -> Unit, enabledColors: TextFieldColors) {
     val calendar = Calendar.getInstance()
     calendar.set(2024, 0, 1) // month (0) is January
 
@@ -395,7 +387,8 @@ fun TimePickerComponent(onTimeSelected: (String) -> Unit) {
                 .clickable { showTimePicker = true }
                 .fillMaxWidth(0.8f),
             label = { Text("Select Time") },
-            enabled = false
+            enabled = false,
+            colors = enabledColors
         )
     }
 }
