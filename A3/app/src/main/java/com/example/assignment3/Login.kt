@@ -48,6 +48,7 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
     var password by remember { mutableStateOf("") }
     var isEmailValid by remember { mutableStateOf(false) }
     var isPassValid by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     // Google Signin
     // https://stackoverflow.com/questions/72563673/google-authentication-with-firebase-and-jetpack-compose
@@ -117,7 +118,7 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 350.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             isError = !isPassValid
         )
 
@@ -172,6 +173,7 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
                         if (task.isSuccessful) {
                             navController.navigate("Navigation")
                         } else {
+                            errorMessage = "The email or password is incorrect"
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
                         }
                     }
@@ -182,8 +184,17 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
                 .width(200.dp),
         ) {
             Text("Login")
+
         }
 
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 32.dp)
+                    .align(Alignment.TopCenter)
+            )
+        }
 
 
         Button(
@@ -197,5 +208,6 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
         }
 
     }
+
 
 }
