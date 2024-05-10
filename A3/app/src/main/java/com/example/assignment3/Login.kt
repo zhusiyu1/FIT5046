@@ -2,6 +2,7 @@ package com.example.assignment3
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -73,8 +74,7 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
 
                         }
                     }
-            }
-            catch (e: ApiException) {
+            } catch (e: ApiException) {
                 Log.w("TAG", "GoogleSign in Failed", e)
             }
     }
@@ -98,8 +98,10 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it
-                isEmailValid = it.isNotEmpty()},
+            onValueChange = {
+                email = it
+                isEmailValid = it.isNotEmpty()
+            },
             label = { Text("Email") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -112,8 +114,10 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it
-                isPassValid = it.isNotEmpty()},
+            onValueChange = {
+                password = it
+                isPassValid = it.isNotEmpty()
+            },
             label = { Text("Password") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -124,10 +128,18 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
 
         Column {
             if (!isEmailValid) {
-                Text(text = "The email cannot be empty", color = Color.Red, modifier = Modifier.padding(start = 16.dp))
+                Text(
+                    text = "The email cannot be empty",
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
             if (!isPassValid) {
-                Text(text = "The password cannot be empty", color = Color.Red, modifier = Modifier.padding(start = 16.dp))
+                Text(
+                    text = "The password cannot be empty",
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
         }
 
@@ -143,19 +155,28 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
                 val googleSignInClient = GoogleSignIn.getClient(context, gso)
                 launcher.launch(googleSignInClient.signInIntent)
 
-//                val user = User(
-//                    email = "",
-//                    firstName = "",
-//                    lastName = "",
-//                    dateOfBirth = "",
-//                    gender = "",
-//                    password = "",
-//                    mobilePhone = ""
-//                )
-//
-//                storeUserInDatabase(user)
+                print("User exists: ${FirebaseAuth.getInstance().currentUser}")
+                if (FirebaseAuth.getInstance().currentUser != null) {
 
-                navController.navigate("Navigation")
+                    val user = FirebaseAuth.getInstance().currentUser!!.email?.let {
+                        User(
+                            email = it,
+                            firstName = "",
+                            lastName = "",
+                            dateOfBirth = "",
+                            gender = "",
+                            password = "",
+                            mobilePhone = ""
+                        )
+                    }
+
+                    storeUserInDatabase(user!!)
+
+                    navController.navigate("Navigation")
+                } else {
+                    Toast.makeText(context, "User does not exist", Toast.LENGTH_SHORT).show()
+                }
+
             },
             modifier = Modifier
                 .padding(end = 16.dp, bottom = 300.dp)
@@ -191,14 +212,15 @@ fun Login(navController: NavController, healthViewModel: HealthViewModel = hiltV
             Text(
                 text = errorMessage,
                 color = Color.Red,
-                modifier = Modifier.padding(top = 32.dp)
+                modifier = Modifier
+                    .padding(top = 32.dp)
                     .align(Alignment.TopCenter)
             )
         }
 
 
         Button(
-            onClick = {navController.navigate("Register") },
+            onClick = { navController.navigate("Register") },
             modifier = Modifier
                 .padding(end = 16.dp, bottom = 150.dp)
                 .align(Alignment.BottomCenter)

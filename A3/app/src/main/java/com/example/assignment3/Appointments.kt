@@ -120,33 +120,31 @@ fun Appointment(
 
     val book: () -> Unit = {
         if (auth.currentUser != null) {
-            print("Please book an appointment")
-            print("Auth user ${auth.currentUser!!.uid}")
-            print("User ${auth.currentUser!!}")
-        } else {
-            print("Please login")
-        }
-        if (selectedDate!! < dateNow && selectedTime < timeNow.toString()) {
-            Toast.makeText(context, "Please select a future date and time", Toast.LENGTH_SHORT).show()
-        } else {
-            if (selectedHospital != null) {
-                healthViewModel.scheduleBooking(
-                    Booking(
-                        bookingDate = selectedDate!!,
-                        bookingTime = selectedTime,
-                        bookingLocationId = selectedHospital!!.uid,
-                        bookingLocationName = selectedHospital!!.name,
-                        bookingLocationAddress = selectedHospital!!.address,
-                        bookingUser = auth.currentUser!!.uid,
-                    )
-                )
-                print("Auth user ${FirebaseAuth.getInstance().currentUser!!.uid}")
-                print("User ${FirebaseAuth.getInstance().currentUser!!}")
-
-                navController?.navigate("Home")
+            if (selectedDate!! < dateNow && selectedTime < timeNow.toString()) {
+                Toast.makeText(context, "Please select a future date and time", Toast.LENGTH_SHORT)
+                    .show()
             } else {
-                Toast.makeText(context, "Please select a hospital", Toast.LENGTH_SHORT).show()
+                if (selectedHospital != null) {
+                    healthViewModel.scheduleBooking(
+                        Booking(
+                            bookingDate = selectedDate!!,
+                            bookingTime = selectedTime,
+                            bookingLocationId = selectedHospital!!.uid,
+                            bookingLocationName = selectedHospital!!.name,
+                            bookingLocationAddress = selectedHospital!!.address,
+                            bookingUser = auth.currentUser!!.uid,
+                        )
+                    )
+                    print("Auth user ${FirebaseAuth.getInstance().currentUser!!.uid}")
+                    print("User ${FirebaseAuth.getInstance().currentUser!!}")
+
+                    navController?.navigate("Home")
+                } else {
+                    Toast.makeText(context, "Please select a hospital", Toast.LENGTH_SHORT).show()
+                }
             }
+        } else {
+            Toast.makeText(context, "Please try again.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -161,7 +159,7 @@ fun Appointment(
             .background(color = Color.White)
             .padding(vertical = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+    ) {
         Text(
             text = "Book an Appointment",
             color = Color(0xff1f41bb),
@@ -172,9 +170,11 @@ fun Appointment(
             ),
             modifier = Modifier.padding(bottom = 32.dp)
         )
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Column() {
                 Text(
                     text = "Date",
@@ -191,14 +191,16 @@ fun Appointment(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                DatePickerComponent( { date ->
+                DatePickerComponent({ date ->
                     selectedDate = date
                 }, enabledColors)
             }
         }
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 text = "Time",
                 color = Color.Black,
@@ -231,9 +233,17 @@ fun Appointment(
             )
             Box(modifier = Modifier.clickable { expanded = true }) {
                 if (selectedHospital != null) {
-                    Property1Default1(Modifier, selectedHospital!!.name, enabledColors = enabledColors)
+                    Property1Default1(
+                        Modifier,
+                        selectedHospital!!.name,
+                        enabledColors = enabledColors
+                    )
                 } else {
-                    Property1Default1(Modifier, "Monash Campus Medical Center (Clayton)", enabledColors = enabledColors)
+                    Property1Default1(
+                        Modifier,
+                        "Monash Campus Medical Center (Clayton)",
+                        enabledColors = enabledColors
+                    )
                 }
 
             }
