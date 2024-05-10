@@ -64,7 +64,6 @@ fun PreviousAppoinments(modifier: Modifier = Modifier) {
     ) {
         Text(
             text = "History   ",
-            color = Color(0xff1f41bb),
             textAlign = TextAlign.Center,
             style = TextStyle(
                 fontSize = 30.sp,
